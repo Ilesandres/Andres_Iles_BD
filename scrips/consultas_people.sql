@@ -1,6 +1,6 @@
-USE tienda_store;
+USE STORE_DANI;
 
-INSERT INTO people(nombre,apellido, direccion, tipo_dni, dni, telefono)
+INSERT INTO PERSON(FIRST_NAME,LAST_NAME, ADDRESS, DOCUMENT_TYPE_ID, DOCUMENT_NUMBER, PHONE)
 VALUES('Camilo','Santacruz Gutierres','V/Palmenras',2,'1127071439','3227349085');
 
-SELECT *FROM people;
+SELECT *FROM PERSON;
