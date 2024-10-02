@@ -1,142 +1,157 @@
--- Drop the database if it exists and create a new one
-DROP DATABASE IF EXISTS STORE_DANI;
+DROP DATABASE `store_dani`;
+CREATE DATABASE IF NOT EXISTS `store_dani` ;
+USE `store_dani`;
 
-CREATE DATABASE STORE_DANI;
-
-USE STORE_DANI;
-
--- Table for document types (ID, type)
-CREATE TABLE DOCUMENT_TYPE (
-  ID_DOCUMENT_TYPE INT AUTO_INCREMENT PRIMARY KEY,
-  TYPE VARCHAR(45)
+-- Tabla: tipo de documento
+CREATE TABLE `document_type` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table for roles (ID, role name, description)
-CREATE TABLE ROLE (
-  ID_ROLE INT AUTO_INCREMENT PRIMARY KEY,
-  ROLE_NAME VARCHAR(50),
-  DESCRIPTION TINYTEXT
+-- Tabla: rol
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table for sellers (ID, name, surname, document type, document number, role, timestamps)
-CREATE TABLE SELLER (
-  ID_SELLER INT AUTO_INCREMENT PRIMARY KEY,
-  FIRST_NAME VARCHAR(40),
-  LAST_NAME VARCHAR(35),
-  DOCUMENT_TYPE_ID INT,
-  DOCUMENT_NUMBER VARCHAR(12),
-  ROLE_ID INT,
-  CREATED_AT TIMESTAMP,
-  UPDATED_AT DATETIME,
-  FOREIGN KEY (DOCUMENT_TYPE_ID) REFERENCES DOCUMENT_TYPE(ID_DOCUMENT_TYPE),
-  FOREIGN KEY (ROLE_ID) REFERENCES ROLE(ID_ROLE)
+-- Tabla: persona
+CREATE TABLE `people` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(30) DEFAULT NULL,
+  `lastName` varchar(30) DEFAULT NULL,
+  `address` varchar(70) DEFAULT NULL,
+  `documentTypeId` int(11) DEFAULT NULL,
+  `documentNumber` varchar(12) DEFAULT NULL,
+  `phone` varchar(12) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`)
 );
 
--- Table for general people (ID, name, surname, address, document type, document number, phone, timestamps)
-CREATE TABLE PERSON (
-  ID_PERSON INT AUTO_INCREMENT PRIMARY KEY,
-  FIRST_NAME VARCHAR(30),
-  LAST_NAME VARCHAR(30),
-  ADDRESS VARCHAR(70),
-  DOCUMENT_TYPE_ID INT,
-  DOCUMENT_NUMBER VARCHAR(12),
-  PHONE VARCHAR(12),
-  CREATED_AT TIMESTAMP,
-  UPDATED_AT DATETIME,
-  FOREIGN KEY (DOCUMENT_TYPE_ID) REFERENCES DOCUMENT_TYPE(ID_DOCUMENT_TYPE)
+-- Tabla: cliente poner como rol
+CREATE TABLE `customer` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `personId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`personId`) REFERENCES `people` (`id`)
 );
 
--- Table for customers (ID, person reference)
-CREATE TABLE CUSTOMER (
-  ID_CUSTOMER INT AUTO_INCREMENT PRIMARY KEY,
-  PERSON_ID INT,
-  FOREIGN KEY (PERSON_ID) REFERENCES PERSON(ID_PERSON)
+-- Tabla: categoria
+CREATE TABLE `category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table for suppliers (ID, name, NIT, phone, timestamps)
-CREATE TABLE SUPPLIER (
-  ID_SUPPLIER INT AUTO_INCREMENT PRIMARY KEY,
-  NAME VARCHAR(50),
-  NIT VARCHAR(12),
-  PHONE VARCHAR(12),
-  CREATED_AT TIMESTAMP,
-  UPDATED_AT DATETIME
+-- Tabla: producto
+CREATE TABLE `product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  `isActive` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
 );
 
--- Table for product categories (ID, category, description)
-CREATE TABLE CATEGORY (
-  ID_CATEGORY INT AUTO_INCREMENT PRIMARY KEY,
-  CATEGORY_NAME VARCHAR(50),
-  DESCRIPTION TINYTEXT
+-- Tabla: producto categoria
+CREATE TABLE `product_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(11) DEFAULT NULL,
+  `productId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
+  FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
 );
 
--- Table for products (ID, product name, stock, price, timestamps)
-CREATE TABLE PRODUCT (
-  ID_PRODUCT INT AUTO_INCREMENT PRIMARY KEY,
-  PRODUCT_NAME VARCHAR(50),
-  STOCK INT,
-  PRICE INT,
-  CREATED_AT TIMESTAMP,
-  UPDATED_AT DATETIME
+-- Tabla: proveedor rol y aumentar el valor Nit a tipo Id
+CREATE TABLE `supplier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `taxNumber` varchar(12) DEFAULT NULL,
+  `phone` varchar(12) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table to relate products to categories
-CREATE TABLE PRODUCT_CATEGORY (
-  ID_PRODUCT_CATEGORY INT AUTO_INCREMENT PRIMARY KEY,
-  CATEGORY_ID INT,
-  PRODUCT_ID INT,
-  FOREIGN KEY (CATEGORY_ID) REFERENCES CATEGORY(ID_CATEGORY),
-  FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(ID_PRODUCT)
+-- Tabla: producto proveedor
+CREATE TABLE `product_supplier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `supplierId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`)
 );
 
--- Table to relate products to suppliers
-CREATE TABLE PRODUCT_SUPPLIER (
-  ID_PRODUCT_SUPPLIER INT AUTO_INCREMENT PRIMARY KEY,
-  PRODUCT_ID INT,
-  SUPPLIER_ID INT,
-  FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(ID_PRODUCT),
-  FOREIGN KEY (SUPPLIER_ID) REFERENCES SUPPLIER(ID_SUPPLIER)
+-- Tabla: estado de factura
+CREATE TABLE `invoice_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table for invoice statuses (ID, status name, description)
-CREATE TABLE INVOICE_STATUS (
-  ID_INVOICE_STATUS INT AUTO_INCREMENT PRIMARY KEY,
-  STATUS_NAME VARCHAR(50),
-  DESCRIPTION TINYTEXT
+-- Tabla: factura
+CREATE TABLE `invoice` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customerId` int(11) DEFAULT NULL,
+  `statusId` int(11) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`customerId`) REFERENCES `customer` (`id`),
+  FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`)
 );
 
--- Table for invoices (ID, customer ID, status ID, timestamps)
-CREATE TABLE INVOICE (
-  ID_INVOICE INT AUTO_INCREMENT PRIMARY KEY,
-  CUSTOMER_ID INT,
-  STATUS_ID INT,
-  CREATED_AT TIMESTAMP,
-  UPDATED_AT DATETIME,
-  FOREIGN KEY (CUSTOMER_ID) REFERENCES CUSTOMER(ID_CUSTOMER),
-  FOREIGN KEY (STATUS_ID) REFERENCES INVOICE_STATUS(ID_INVOICE_STATUS)
+-- Tabla: factura producto
+CREATE TABLE `invoice_product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `invoiceId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
 );
 
--- Table to relate products to invoices
-CREATE TABLE INVOICE_PRODUCT (
-  ID_INVOICE_PRODUCT INT AUTO_INCREMENT PRIMARY KEY,
-  PRODUCT_ID INT,
-  INVOICE_ID INT,
-  FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT(ID_PRODUCT),
-  FOREIGN KEY (INVOICE_ID) REFERENCES INVOICE(ID_INVOICE)
+-- Tabla: estado de orden
+CREATE TABLE `order_status` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 );
 
--- Table for order statuses
-CREATE TABLE ORDER_STATUS (
-  ID_ORDER_STATUS INT AUTO_INCREMENT PRIMARY KEY,
-  STATUS_NAME VARCHAR(45)
-);
+-- Tabla: orden
+CREATE TABLE `order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceId` int(11) DEFAULT NULL,
+  `statusId` int(11) DEFAULT NULL,
+  `details` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`),
+  FOREIGN KEY (`statusId`) REFERENCES `order_status` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Table for orders (ID, invoice ID, status ID, details)
-CREATE TABLE `ORDER` (
-  ID_ORDER INT AUTO_INCREMENT PRIMARY KEY,
-  INVOICE_ID INT,
-  STATUS_ID INT,
-  DETAILS TINYTEXT,
-  FOREIGN KEY (INVOICE_ID) REFERENCES INVOICE(ID_INVOICE),
-  FOREIGN KEY (STATUS_ID) REFERENCES ORDER_STATUS(ID_ORDER_STATUS)
+-- Tabla: vendedor, convertir en rol 
+CREATE TABLE `seller` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(40) DEFAULT NULL,
+  `lastName` varchar(35) DEFAULT NULL,
+  `documentTypeId` int(11) DEFAULT NULL,
+  `documentNumber` varchar(12) DEFAULT NULL,
+  `roleId` int(11) DEFAULT NULL,
+  `username` VARCHAR(20) NOT NULL,
+  `password` VARCHAR(30) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
+  FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
 );

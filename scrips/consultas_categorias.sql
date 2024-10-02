@@ -10,12 +10,22 @@ USE STORE_DANI;
 
 
 
-SELECT  PRODUCT.id AS product_id,
-PRODUCT.name AS PRODUCT_NAME,  PRODUCT.STOCK,  PRODUCT.PRICE, CATEGORY.name AS CATEGORY_NAME, 
-PRODUCT.IS_ACTIVE FROM  category INNER JOIN  product_category ON category.id = product_category.category_id
- INNER JOIN   product ON product_category.product_id = product.id;
+SELECT  
+                product.id AS productId,
+                product.name AS productName, 
+                product.stock, 
+                product.price,
+                category.name AS categoryName, 
+                product.isActive,
+                category.id AS valueCategory
+            FROM 
+                category
+            INNER JOIN 
+                product_category ON category.id = product_category.categoryId
+            INNER JOIN 
+                product ON product_category.productId = product.id;
 
-SELECT *FROM CATEGORY;
+SELECT *FROM category;
 
 
 

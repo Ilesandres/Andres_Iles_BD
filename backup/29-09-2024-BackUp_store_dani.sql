@@ -25,10 +25,10 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) DEFAULT NULL,
-  `DESCRIPTION` tinytext DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -50,12 +50,12 @@ DROP TABLE IF EXISTS `customer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customer` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `PERSON_ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `PERSON_ID` (`PERSON_ID`),
-  CONSTRAINT `CUSTOMER_IBFK_1` FOREIGN KEY (`PERSON_ID`) REFERENCES `person` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `personId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `personId` (`personId`),
+  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`personId`) REFERENCES `people` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,9 +75,9 @@ DROP TABLE IF EXISTS `document_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `document_type` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `TYPE` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `type` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -99,16 +99,16 @@ DROP TABLE IF EXISTS `invoice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `CUSTOMER_ID` int(11) DEFAULT NULL,
-  `STATUS_ID` int(11) DEFAULT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `UPDATED_AT` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `CUSTOMER_ID` (`CUSTOMER_ID`),
-  KEY `STATUS_ID` (`STATUS_ID`),
-  CONSTRAINT `INVOICE_IBFK_1` FOREIGN KEY (`CUSTOMER_ID`) REFERENCES `customer` (`ID`),
-  CONSTRAINT `INVOICE_IBFK_2` FOREIGN KEY (`STATUS_ID`) REFERENCES `invoice_status` (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customerId` int(11) DEFAULT NULL,
+  `statusId` int(11) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `customerId` (`customerId`),
+  KEY `statusId` (`statusId`),
+  CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`customerId`) REFERENCES `customer` (`id`),
+  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -129,14 +129,14 @@ DROP TABLE IF EXISTS `invoice_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice_product` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `PRODUCT_ID` int(11) DEFAULT NULL,
-  `INVOICE_ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `PRODUCT_ID` (`PRODUCT_ID`),
-  KEY `INVOICE_ID` (`INVOICE_ID`),
-  CONSTRAINT `INVOICE_PRODUCT_IBFK_1` FOREIGN KEY (`PRODUCT_ID`) REFERENCES `product` (`ID`),
-  CONSTRAINT `INVOICE_PRODUCT_IBFK_2` FOREIGN KEY (`INVOICE_ID`) REFERENCES `invoice` (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `invoiceId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productId` (`productId`),
+  KEY `invoiceId` (`invoiceId`),
+  CONSTRAINT `invoice_product_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  CONSTRAINT `invoice_product_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -157,10 +157,10 @@ DROP TABLE IF EXISTS `invoice_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice_status` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) DEFAULT NULL,
-  `DESCRIPTION` tinytext DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -181,15 +181,15 @@ DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `INVOICE_ID` int(11) DEFAULT NULL,
-  `STATUS_ID` int(11) DEFAULT NULL,
-  `DETAILS` tinytext DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `INVOICE_ID` (`INVOICE_ID`),
-  KEY `STATUS_ID` (`STATUS_ID`),
-  CONSTRAINT `ORDER_IBFK_1` FOREIGN KEY (`INVOICE_ID`) REFERENCES `invoice` (`ID`),
-  CONSTRAINT `ORDER_IBFK_2` FOREIGN KEY (`STATUS_ID`) REFERENCES `order_status` (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoiceId` int(11) DEFAULT NULL,
+  `statusId` int(11) DEFAULT NULL,
+  `details` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `invoiceId` (`invoiceId`),
+  KEY `statusId` (`statusId`),
+  CONSTRAINT `order_ibfk_1` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`),
+  CONSTRAINT `order_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `order_status` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -210,9 +210,9 @@ DROP TABLE IF EXISTS `order_status`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order_status` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -226,35 +226,36 @@ LOCK TABLES `order_status` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `person`
+-- Table structure for table `people`
 --
 
-DROP TABLE IF EXISTS `person`;
+DROP TABLE IF EXISTS `people`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `person` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `FIRST_NAME` varchar(30) DEFAULT NULL,
-  `LAST_NAME` varchar(30) DEFAULT NULL,
-  `ADDRESS` varchar(70) DEFAULT NULL,
-  `DOCUMENT_TYPE_ID` int(11) DEFAULT NULL,
-  `DOCUMENT_NUMBER` varchar(12) DEFAULT NULL,
-  `PHONE` varchar(12) DEFAULT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `UPDATED_AT` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `DOCUMENT_TYPE_ID` (`DOCUMENT_TYPE_ID`),
-  CONSTRAINT `PERSON_IBFK_1` FOREIGN KEY (`DOCUMENT_TYPE_ID`) REFERENCES `document_type` (`ID`)
+CREATE TABLE `people` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(30) DEFAULT NULL,
+  `lastName` varchar(30) DEFAULT NULL,
+  `address` varchar(70) DEFAULT NULL,
+  `documentTypeId` int(11) DEFAULT NULL,
+  `documentNumber` varchar(12) DEFAULT NULL,
+  `phone` varchar(12) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `documentTypeId` (`documentTypeId`),
+  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `person`
+-- Dumping data for table `people`
 --
 
-LOCK TABLES `person` WRITE;
-/*!40000 ALTER TABLE `person` DISABLE KEYS */;
-/*!40000 ALTER TABLE `person` ENABLE KEYS */;
+LOCK TABLES `people` WRITE;
+/*!40000 ALTER TABLE `people` DISABLE KEYS */;
+INSERT INTO `people` VALUES (1,'Juan','Perez','Calle 45 22-33',4,'1234567890','juan@example','0000-00-00 00:00:00','1990-05-10 00:00:00');
+/*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -265,15 +266,15 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) DEFAULT NULL,
-  `STOCK` int(11) DEFAULT NULL,
-  `PRICE` float DEFAULT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp(),
-  `UPDATED_AT` datetime DEFAULT NULL,
-  `IS_ACTIVE` tinyint(1) DEFAULT 1,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `stock` int(11) DEFAULT NULL,
+  `price` float DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  `isActive` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,7 +283,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (15,'Arbeja Diana x1kl',18,127,'2024-09-29 00:15:03','2024-09-28 19:27:11',1),(16,'Agua x1lt',10,1800.5,'2024-09-28 23:41:03','2024-09-28 18:41:03',1),(17,'Platano xkl',10,127,'2024-09-29 00:13:26','2024-09-28 19:26:41',1),(20,'mechera',4,127,'2024-09-25 18:48:43',NULL,1),(24,'pollo por libra',15,12,'2024-09-25 18:53:18',NULL,1),(31,'bimbom bun',44,127,'2024-09-25 18:55:03','2024-09-28 19:27:29',1),(35,'Arroz Diana x1kl',36,127,'2024-09-27 13:12:31',NULL,1),(36,'Arroz Diana x1kl',36,127,'2024-09-27 13:13:12',NULL,1),(37,'Arroz Diana x1kl',36,127,'2024-09-27 13:13:17',NULL,1),(38,'Panela x1kl',18,4500,'2024-09-28 20:56:11',NULL,1),(44,'carne cerdo xkl',25,18000,'2024-09-28 22:36:48',NULL,1),(45,'arroz diana kl',35,500.5,'2024-09-28 22:37:54','2024-09-28 17:37:54',1);
+INSERT INTO `product` VALUES (1,'Arroz 1000g',10,12000,'2024-10-02 15:00:00','2024-10-02 10:00:00',1),(2,'Leche',25,4000,'2024-10-02 15:01:00','2024-10-02 10:01:00',1),(3,'Pollo (kg)',15,8000,'2024-10-02 15:02:00','2024-10-02 10:02:00',1),(4,'Carne de Res (kg)',10,18000,'2024-10-02 15:03:00','2024-10-02 10:03:00',1),(5,'Manzana (unidad)',50,2000,'2024-10-02 15:04:00','2024-10-02 10:04:00',1),(6,'Jugo (botella)',20,3000,'2024-10-02 15:05:00','2024-10-02 10:05:00',1),(7,'Huevo (docena)',30,5000,'2024-10-02 15:06:00','2024-10-02 10:06:00',1),(8,'Tetra Pak',40,3000,'2024-10-02 15:07:00','2024-10-02 10:07:00',1),(9,'Hueso perro',10,2500,'2024-10-02 15:08:00','2024-10-02 10:08:00',1),(10,'Galletas paquete',100,2000,'2024-10-02 15:09:00','2024-10-02 10:09:00',1);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -294,15 +295,15 @@ DROP TABLE IF EXISTS `product_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_category` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `CATEGORY_ID` int(11) DEFAULT NULL,
-  `PRODUCT_ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `CATEGORY_ID` (`CATEGORY_ID`),
-  KEY `PRODUCT_ID` (`PRODUCT_ID`),
-  CONSTRAINT `PRODUCT_CATEGORY_IBFK_1` FOREIGN KEY (`CATEGORY_ID`) REFERENCES `category` (`ID`),
-  CONSTRAINT `PRODUCT_CATEGORY_IBFK_2` FOREIGN KEY (`PRODUCT_ID`) REFERENCES `product` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(11) DEFAULT NULL,
+  `productId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `categoryId` (`categoryId`),
+  KEY `productId` (`productId`),
+  CONSTRAINT `product_category_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
+  CONSTRAINT `product_category_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +312,6 @@ CREATE TABLE `product_category` (
 
 LOCK TABLES `product_category` WRITE;
 /*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
-INSERT INTO `product_category` VALUES (9,10,15),(10,11,16),(11,12,17),(14,14,20),(18,13,24),(25,16,31),(32,14,38),(38,13,44),(39,10,45);
 /*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -323,14 +323,14 @@ DROP TABLE IF EXISTS `product_supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product_supplier` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `PRODUCT_ID` int(11) DEFAULT NULL,
-  `SUPPLIER_ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `PRODUCT_ID` (`PRODUCT_ID`),
-  KEY `SUPPLIER_ID` (`SUPPLIER_ID`),
-  CONSTRAINT `PRODUCT_SUPPLIER_IBFK_1` FOREIGN KEY (`PRODUCT_ID`) REFERENCES `product` (`ID`),
-  CONSTRAINT `PRODUCT_SUPPLIER_IBFK_2` FOREIGN KEY (`SUPPLIER_ID`) REFERENCES `supplier` (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `productId` int(11) DEFAULT NULL,
+  `supplierId` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productId` (`productId`),
+  KEY `supplierId` (`supplierId`),
+  CONSTRAINT `product_supplier_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  CONSTRAINT `product_supplier_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -344,27 +344,27 @@ LOCK TABLES `product_supplier` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `role`
+-- Table structure for table `roles`
 --
 
-DROP TABLE IF EXISTS `role`;
+DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `role` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) DEFAULT NULL,
-  `DESCRIPTION` tinytext DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+CREATE TABLE `roles` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `role`
+-- Dumping data for table `roles`
 --
 
-LOCK TABLES `role` WRITE;
-/*!40000 ALTER TABLE `role` DISABLE KEYS */;
-/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+LOCK TABLES `roles` WRITE;
+/*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+/*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -375,19 +375,21 @@ DROP TABLE IF EXISTS `seller`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seller` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `FIRST_NAME` varchar(40) DEFAULT NULL,
-  `LAST_NAME` varchar(35) DEFAULT NULL,
-  `DOCUMENT_TYPE_ID` int(11) DEFAULT NULL,
-  `DOCUMENT_NUMBER` varchar(12) DEFAULT NULL,
-  `ROLE_ID` int(11) DEFAULT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `UPDATED_AT` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `DOCUMENT_TYPE_ID` (`DOCUMENT_TYPE_ID`),
-  KEY `ROLE_ID` (`ROLE_ID`),
-  CONSTRAINT `SELLER_IBFK_1` FOREIGN KEY (`DOCUMENT_TYPE_ID`) REFERENCES `document_type` (`ID`),
-  CONSTRAINT `SELLER_IBFK_2` FOREIGN KEY (`ROLE_ID`) REFERENCES `role` (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `firstName` varchar(40) DEFAULT NULL,
+  `lastName` varchar(35) DEFAULT NULL,
+  `documentTypeId` int(11) DEFAULT NULL,
+  `documentNumber` varchar(12) DEFAULT NULL,
+  `roleId` int(11) DEFAULT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(30) NOT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `documentTypeId` (`documentTypeId`),
+  KEY `roleId` (`roleId`),
+  CONSTRAINT `seller_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
+  CONSTRAINT `seller_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -408,13 +410,13 @@ DROP TABLE IF EXISTS `supplier`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `supplier` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(50) DEFAULT NULL,
-  `TAX_NUMBER` varchar(12) DEFAULT NULL,
-  `PHONE` varchar(12) DEFAULT NULL,
-  `CREATED_AT` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `UPDATED_AT` datetime DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) DEFAULT NULL,
+  `taxNumber` varchar(12) DEFAULT NULL,
+  `phone` varchar(12) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -436,4 +438,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-09-28 19:31:10
+-- Dump completed on 2024-10-02 14:08:07
