@@ -29,7 +29,7 @@ CREATE TABLE `category` (
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,33 +38,8 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (10,'granos','granos como arroz, frijol, arveja..'),(11,'Bedidas enbotelladas','bebidas de todo tipo consumo humano'),(12,'frutas y verduras','verduras y demas naturales'),(13,'carnes','carnes de cerdo, res, pollo y demas\n'),(14,'abarrotes','productos generales de uso diario'),(15,'mascotas','alimentos para mascotas'),(16,'mecato xunidad','mecato por paquetes unitarios');
+INSERT INTO `category` VALUES (10,'granos','granos como arroz, frijol, arveja..'),(11,'Bedidas enbotelladas','bebidas de todo tipo consumo humano'),(12,'frutas y verduras','verduras y demas naturales'),(13,'carnes','carnes de cerdo, res, pollo y demas\n'),(14,'abarrotes','productos generales de uso diario'),(15,'mascotas','alimentos para mascotas'),(16,'mecato xunidad','mecato por paquetes unitarios'),(17,'ropa','ropas de todo tipo');
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `customer`
---
-
-DROP TABLE IF EXISTS `customer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `customer` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `personId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `personId` (`personId`),
-  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`personId`) REFERENCES `people` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `customer`
---
-
-LOCK TABLES `customer` WRITE;
-/*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-/*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -100,15 +75,15 @@ DROP TABLE IF EXISTS `invoice`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `customerId` int(11) DEFAULT NULL,
   `statusId` int(11) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
+  `peopleId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `customerId` (`customerId`),
   KEY `statusId` (`statusId`),
-  CONSTRAINT `invoice_ibfk_1` FOREIGN KEY (`customerId`) REFERENCES `customer` (`id`),
-  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`)
+  KEY `peopleId` (`peopleId`),
+  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`),
+  CONSTRAINT `invoice_ibfk_3` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -242,10 +217,14 @@ CREATE TABLE `people` (
   `phone` varchar(12) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
+  `isActive` tinyint(1) DEFAULT 0,
+  `idRol` int(11) DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `documentTypeId` (`documentTypeId`),
-  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `idRol` (`idRol`),
+  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
+  CONSTRAINT `people_ibfk_2` FOREIGN KEY (`idRol`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -254,7 +233,7 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
-INSERT INTO `people` VALUES (1,'Juan','Perez','Calle 45 22-33',4,'1234567890','juan@example','0000-00-00 00:00:00','1990-05-10 00:00:00');
+INSERT INTO `people` VALUES (1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-04 00:18:10','2024-10-03 19:18:10',0,1),(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-04 00:18:01','2024-10-03 19:18:01',1,1),(3,'Camilo','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-04 00:18:09','2024-10-03 19:18:09',1,1);
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -274,7 +253,7 @@ CREATE TABLE `product` (
   `updatedAt` datetime DEFAULT NULL,
   `isActive` tinyint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +262,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Arroz 1000g',10,12000,'2024-10-02 15:00:00','2024-10-02 10:00:00',1),(2,'Leche',25,4000,'2024-10-02 15:01:00','2024-10-02 10:01:00',1),(3,'Pollo (kg)',15,8000,'2024-10-02 15:02:00','2024-10-02 10:02:00',1),(4,'Carne de Res (kg)',10,18000,'2024-10-02 15:03:00','2024-10-02 10:03:00',1),(5,'Manzana (unidad)',50,2000,'2024-10-02 15:04:00','2024-10-02 10:04:00',1),(6,'Jugo (botella)',20,3000,'2024-10-02 15:05:00','2024-10-02 10:05:00',1),(7,'Huevo (docena)',30,5000,'2024-10-02 15:06:00','2024-10-02 10:06:00',1),(8,'Tetra Pak',40,3000,'2024-10-02 15:07:00','2024-10-02 10:07:00',1),(9,'Hueso perro',10,2500,'2024-10-02 15:08:00','2024-10-02 10:08:00',1),(10,'Galletas paquete',100,2000,'2024-10-02 15:09:00','2024-10-02 10:09:00',1);
+INSERT INTO `product` VALUES (1,'Arroz 1000g',10,12000,'2024-10-02 15:00:00','2024-10-02 16:22:35',1),(2,'Leche',25,4000,'2024-10-02 15:01:00','2024-10-02 10:01:00',1),(3,'Pollo (kg)',15,8000,'2024-10-02 15:02:00','2024-10-02 10:02:00',1),(4,'Carne de Res (kg)',10,18000,'2024-10-02 15:03:00','2024-10-02 10:03:00',1),(5,'Manzana (unidad)',50,2000,'2024-10-02 15:04:00','2024-10-02 10:04:00',1),(6,'Jugo (botella)',20,3000,'2024-10-02 15:05:00','2024-10-02 10:05:00',1),(7,'Huevo (docena)',30,5000,'2024-10-02 15:06:00','2024-10-02 10:06:00',1),(8,'Tetra Pak',40,3000,'2024-10-02 15:07:00','2024-10-02 10:07:00',1),(9,'Hueso perro',10,2500,'2024-10-02 15:08:00','2024-10-02 10:08:00',1),(11,'Galletas xunidad',18,1200,'2024-10-02 21:33:00',NULL,1),(12,'agua xL(botella)',18,1500,'2024-10-04 02:26:59',NULL,1);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,7 +282,7 @@ CREATE TABLE `product_category` (
   KEY `productId` (`productId`),
   CONSTRAINT `product_category_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
   CONSTRAINT `product_category_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -312,6 +291,7 @@ CREATE TABLE `product_category` (
 
 LOCK TABLES `product_category` WRITE;
 /*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
+INSERT INTO `product_category` VALUES (28,10,1),(29,11,2),(30,16,3),(31,13,4),(32,12,5),(33,11,6),(34,15,7),(35,14,8),(36,15,9),(38,16,11),(39,11,12);
 /*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -355,7 +335,7 @@ CREATE TABLE `roles` (
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -364,6 +344,7 @@ CREATE TABLE `roles` (
 
 LOCK TABLES `roles` WRITE;
 /*!40000 ALTER TABLE `roles` DISABLE KEYS */;
+INSERT INTO `roles` VALUES (1,'clientes',NULL),(2,'Vendedor',NULL);
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -376,20 +357,14 @@ DROP TABLE IF EXISTS `seller`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seller` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `firstName` varchar(40) DEFAULT NULL,
-  `lastName` varchar(35) DEFAULT NULL,
-  `documentTypeId` int(11) DEFAULT NULL,
-  `documentNumber` varchar(12) DEFAULT NULL,
-  `roleId` int(11) DEFAULT NULL,
   `username` varchar(20) NOT NULL,
   `password` varchar(30) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
+  `peopleId` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `documentTypeId` (`documentTypeId`),
-  KEY `roleId` (`roleId`),
-  CONSTRAINT `seller_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
-  CONSTRAINT `seller_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
+  KEY `peopleId` (`peopleId`),
+  CONSTRAINT `seller_ibfk_1` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -438,4 +413,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-02 14:08:07
+-- Dump completed on 2024-10-04 17:04:18

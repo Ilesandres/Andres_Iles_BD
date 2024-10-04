@@ -25,20 +25,16 @@ CREATE TABLE `people` (
   `address` varchar(70) DEFAULT NULL,
   `documentTypeId` int(11) DEFAULT NULL,
   `documentNumber` varchar(12) DEFAULT NULL,
+  `idRol` int,
   `phone` varchar(12) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`)
+  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
+  FOREIGN KEY(`idRol`) REFERENCES roles(id)
 );
 
--- Tabla: cliente poner como rol
-CREATE TABLE `customer` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `personId` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`personId`) REFERENCES `people` (`id`)
-);
+
 
 -- Tabla: categoria
 CREATE TABLE `category` (
@@ -99,16 +95,15 @@ CREATE TABLE `invoice_status` (
   PRIMARY KEY (`id`)
 );
 
--- Tabla: factura
-CREATE TABLE `invoice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `customerId` int(11) DEFAULT NULL,
-  `statusId` int(11) DEFAULT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updatedAt` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`customerId`) REFERENCES `customer` (`id`),
-  FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`)
+
+CREATE TABLE IF NOT EXISTS invoice(
+id INT AUTO_INCREMENT PRIMARY KEY,
+peopleId INT,
+statusId INT,
+createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+updatedAt DATETIME,
+FOREIGN KEY (peopleId) REFERENCES people(id),
+FOREIGN KEY (statusId) REFERENCES invoice_status (id)
 );
 
 -- Tabla: factura producto
