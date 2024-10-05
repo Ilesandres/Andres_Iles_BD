@@ -25,13 +25,11 @@ CREATE TABLE `people` (
   `address` varchar(70) DEFAULT NULL,
   `documentTypeId` int(11) DEFAULT NULL,
   `documentNumber` varchar(12) DEFAULT NULL,
-  `idRol` int,
   `phone` varchar(12) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
-  FOREIGN KEY(`idRol`) REFERENCES roles(id)
+  FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`)
 );
 
 
@@ -149,4 +147,19 @@ CREATE TABLE `seller` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
   FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
+);
+
+CREATE TABLE `userRol`(
+id INT(20) AUTO_INCREMENT PRIMARY KEY,
+peopleId INT(20),
+rolId INT(20),
+FOREIGN KEY(peopleId) REFERENCES people(id),
+FOREIGN KEY(rolId) REFERENCES roles(id)
+);
+
+CREATE TABLE `productDesc`(
+id int(20) AUTO_INCREMENT PRIMARY KEY,
+productId int(20),
+discount BOOLEAN,
+FOREIGN KEY(productId) REFERENCES product(id)
 );

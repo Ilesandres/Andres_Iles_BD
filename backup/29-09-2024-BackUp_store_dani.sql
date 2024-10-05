@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -43,27 +43,27 @@ INSERT INTO `category` VALUES (10,'granos','granos como arroz, frijol, arveja..'
 UNLOCK TABLES;
 
 --
--- Table structure for table `document_type`
+-- Table structure for table `documenttype`
 --
 
-DROP TABLE IF EXISTS `document_type`;
+DROP TABLE IF EXISTS `documenttype`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `document_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `documenttype` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `document_type`
+-- Dumping data for table `documenttype`
 --
 
-LOCK TABLES `document_type` WRITE;
-/*!40000 ALTER TABLE `document_type` DISABLE KEYS */;
-INSERT INTO `document_type` VALUES (4,'T.I'),(5,'C.C'),(6,'C.E');
-/*!40000 ALTER TABLE `document_type` ENABLE KEYS */;
+LOCK TABLES `documenttype` WRITE;
+/*!40000 ALTER TABLE `documenttype` DISABLE KEYS */;
+INSERT INTO `documenttype` VALUES (4,'T.I'),(5,'C.C'),(6,'C.E');
+/*!40000 ALTER TABLE `documenttype` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -74,15 +74,15 @@ DROP TABLE IF EXISTS `invoice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `invoice` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `statusId` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `statusId` int(20) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
-  `peopleId` int(11) DEFAULT NULL,
+  `peopleId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `statusId` (`statusId`),
   KEY `peopleId` (`peopleId`),
-  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoice_status` (`id`),
+  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoicestatus` (`id`),
   CONSTRAINT `invoice_ibfk_3` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -97,42 +97,42 @@ LOCK TABLES `invoice` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `invoice_product`
+-- Table structure for table `invoiceproduct`
 --
 
-DROP TABLE IF EXISTS `invoice_product`;
+DROP TABLE IF EXISTS `invoiceproduct`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `invoice_product` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `productId` int(11) DEFAULT NULL,
-  `invoiceId` int(11) DEFAULT NULL,
+CREATE TABLE `invoiceproduct` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `productId` int(20) DEFAULT NULL,
+  `invoiceId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `productId` (`productId`),
   KEY `invoiceId` (`invoiceId`),
-  CONSTRAINT `invoice_product_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-  CONSTRAINT `invoice_product_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
+  CONSTRAINT `invoiceproduct_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  CONSTRAINT `invoiceproduct_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_product`
+-- Dumping data for table `invoiceproduct`
 --
 
-LOCK TABLES `invoice_product` WRITE;
-/*!40000 ALTER TABLE `invoice_product` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_product` ENABLE KEYS */;
+LOCK TABLES `invoiceproduct` WRITE;
+/*!40000 ALTER TABLE `invoiceproduct` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoiceproduct` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `invoice_status`
+-- Table structure for table `invoicestatus`
 --
 
-DROP TABLE IF EXISTS `invoice_status`;
+DROP TABLE IF EXISTS `invoicestatus`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `invoice_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `invoicestatus` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -140,12 +140,12 @@ CREATE TABLE `invoice_status` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `invoice_status`
+-- Dumping data for table `invoicestatus`
 --
 
-LOCK TABLES `invoice_status` WRITE;
-/*!40000 ALTER TABLE `invoice_status` DISABLE KEYS */;
-/*!40000 ALTER TABLE `invoice_status` ENABLE KEYS */;
+LOCK TABLES `invoicestatus` WRITE;
+/*!40000 ALTER TABLE `invoicestatus` DISABLE KEYS */;
+/*!40000 ALTER TABLE `invoicestatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -156,15 +156,15 @@ DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `order` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `invoiceId` int(11) DEFAULT NULL,
-  `statusId` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `invoiceId` int(20) DEFAULT NULL,
+  `statusId` int(20) DEFAULT NULL,
   `details` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `invoiceId` (`invoiceId`),
   KEY `statusId` (`statusId`),
   CONSTRAINT `order_ibfk_1` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`),
-  CONSTRAINT `order_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `order_status` (`id`)
+  CONSTRAINT `order_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `orderstatus` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -178,26 +178,26 @@ LOCK TABLES `order` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `order_status`
+-- Table structure for table `orderstatus`
 --
 
-DROP TABLE IF EXISTS `order_status`;
+DROP TABLE IF EXISTS `orderstatus`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `order_status` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `orderstatus` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `order_status`
+-- Dumping data for table `orderstatus`
 --
 
-LOCK TABLES `order_status` WRITE;
-/*!40000 ALTER TABLE `order_status` DISABLE KEYS */;
-/*!40000 ALTER TABLE `order_status` ENABLE KEYS */;
+LOCK TABLES `orderstatus` WRITE;
+/*!40000 ALTER TABLE `orderstatus` DISABLE KEYS */;
+/*!40000 ALTER TABLE `orderstatus` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -208,23 +208,20 @@ DROP TABLE IF EXISTS `people`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `people` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(30) DEFAULT NULL,
   `lastName` varchar(30) DEFAULT NULL,
   `address` varchar(70) DEFAULT NULL,
-  `documentTypeId` int(11) DEFAULT NULL,
+  `documentTypeId` int(20) DEFAULT NULL,
   `documentNumber` varchar(12) DEFAULT NULL,
   `phone` varchar(12) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
   `isActive` tinyint(1) DEFAULT 0,
-  `idRol` int(11) DEFAULT 1,
   PRIMARY KEY (`id`),
   KEY `documentTypeId` (`documentTypeId`),
-  KEY `idRol` (`idRol`),
-  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `document_type` (`id`),
-  CONSTRAINT `people_ibfk_2` FOREIGN KEY (`idRol`) REFERENCES `roles` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `documenttype` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,8 +230,37 @@ CREATE TABLE `people` (
 
 LOCK TABLES `people` WRITE;
 /*!40000 ALTER TABLE `people` DISABLE KEYS */;
-INSERT INTO `people` VALUES (1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-04 00:18:10','2024-10-03 19:18:10',0,1),(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-04 00:18:01','2024-10-03 19:18:01',1,1),(3,'Camilo','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-04 00:18:09','2024-10-03 19:18:09',1,1);
+INSERT INTO `people` VALUES (1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-04 00:18:10','2024-10-03 19:18:10',0),(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-04 00:18:01','2024-10-03 19:18:01',1),(3,'Camilo','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-04 00:18:09','2024-10-03 19:18:09',1),(4,'Sarah','mandrogan','centro',5,'1245002','3226440156','2024-10-05 21:57:18',NULL,0);
 /*!40000 ALTER TABLE `people` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `peoplerol`
+--
+
+DROP TABLE IF EXISTS `peoplerol`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `peoplerol` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `peopleId` int(20) DEFAULT NULL,
+  `rolId` int(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `peopleId` (`peopleId`),
+  KEY `rolId` (`rolId`),
+  CONSTRAINT `peoplerol_ibfk_1` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`),
+  CONSTRAINT `peoplerol_ibfk_2` FOREIGN KEY (`rolId`) REFERENCES `roles` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `peoplerol`
+--
+
+LOCK TABLES `peoplerol` WRITE;
+/*!40000 ALTER TABLE `peoplerol` DISABLE KEYS */;
+INSERT INTO `peoplerol` VALUES (1,1,1),(2,2,1),(3,3,1),(4,4,2);
+/*!40000 ALTER TABLE `peoplerol` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -245,7 +271,7 @@ DROP TABLE IF EXISTS `product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `product` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   `price` float DEFAULT NULL,
@@ -267,60 +293,86 @@ INSERT INTO `product` VALUES (1,'Arroz 1000g',10,12000,'2024-10-02 15:00:00','20
 UNLOCK TABLES;
 
 --
--- Table structure for table `product_category`
+-- Table structure for table `productcategory`
 --
 
-DROP TABLE IF EXISTS `product_category`;
+DROP TABLE IF EXISTS `productcategory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `product_category` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `categoryId` int(11) DEFAULT NULL,
-  `productId` int(11) DEFAULT NULL,
+CREATE TABLE `productcategory` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(20) DEFAULT NULL,
+  `productId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `categoryId` (`categoryId`),
   KEY `productId` (`productId`),
-  CONSTRAINT `product_category_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
-  CONSTRAINT `product_category_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
+  CONSTRAINT `productcategory_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
+  CONSTRAINT `productcategory_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product_category`
+-- Dumping data for table `productcategory`
 --
 
-LOCK TABLES `product_category` WRITE;
-/*!40000 ALTER TABLE `product_category` DISABLE KEYS */;
-INSERT INTO `product_category` VALUES (28,10,1),(29,11,2),(30,16,3),(31,13,4),(32,12,5),(33,11,6),(34,15,7),(35,14,8),(36,15,9),(38,16,11),(39,11,12);
-/*!40000 ALTER TABLE `product_category` ENABLE KEYS */;
+LOCK TABLES `productcategory` WRITE;
+/*!40000 ALTER TABLE `productcategory` DISABLE KEYS */;
+INSERT INTO `productcategory` VALUES (28,10,1),(29,11,2),(30,16,3),(31,13,4),(32,12,5),(33,11,6),(34,15,7),(35,14,8),(36,15,9),(38,16,11),(39,11,12);
+/*!40000 ALTER TABLE `productcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `product_supplier`
+-- Table structure for table `productdesc`
 --
 
-DROP TABLE IF EXISTS `product_supplier`;
+DROP TABLE IF EXISTS `productdesc`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `product_supplier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `productId` int(11) DEFAULT NULL,
-  `supplierId` int(11) DEFAULT NULL,
+CREATE TABLE `productdesc` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `productId` int(20) DEFAULT NULL,
+  `discount` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `productId` (`productId`),
-  KEY `supplierId` (`supplierId`),
-  CONSTRAINT `product_supplier_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-  CONSTRAINT `product_supplier_ibfk_2` FOREIGN KEY (`supplierId`) REFERENCES `supplier` (`id`)
+  CONSTRAINT `productdesc_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product_supplier`
+-- Dumping data for table `productdesc`
 --
 
-LOCK TABLES `product_supplier` WRITE;
-/*!40000 ALTER TABLE `product_supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product_supplier` ENABLE KEYS */;
+LOCK TABLES `productdesc` WRITE;
+/*!40000 ALTER TABLE `productdesc` DISABLE KEYS */;
+/*!40000 ALTER TABLE `productdesc` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `productsupplier`
+--
+
+DROP TABLE IF EXISTS `productsupplier`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `productsupplier` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `productId` int(20) DEFAULT NULL,
+  `peopleId` int(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productId` (`productId`),
+  KEY `peopleId` (`peopleId`),
+  CONSTRAINT `productsupplier_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
+  CONSTRAINT `productsupplier_ibfk_2` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `productsupplier`
+--
+
+LOCK TABLES `productsupplier` WRITE;
+/*!40000 ALTER TABLE `productsupplier` DISABLE KEYS */;
+/*!40000 ALTER TABLE `productsupplier` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -331,7 +383,7 @@ DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `roles` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -356,12 +408,12 @@ DROP TABLE IF EXISTS `seller`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `seller` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
   `username` varchar(20) NOT NULL,
   `password` varchar(30) NOT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
-  `peopleId` int(11) DEFAULT NULL,
+  `peopleId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `peopleId` (`peopleId`),
   CONSTRAINT `seller_ibfk_1` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
@@ -376,33 +428,6 @@ LOCK TABLES `seller` WRITE;
 /*!40000 ALTER TABLE `seller` DISABLE KEYS */;
 /*!40000 ALTER TABLE `seller` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Table structure for table `supplier`
---
-
-DROP TABLE IF EXISTS `supplier`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `supplier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) DEFAULT NULL,
-  `taxNumber` varchar(12) DEFAULT NULL,
-  `phone` varchar(12) DEFAULT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updatedAt` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `supplier`
---
-
-LOCK TABLES `supplier` WRITE;
-/*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
-/*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -413,4 +438,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-04 17:04:18
+-- Dump completed on 2024-10-05 17:02:02
