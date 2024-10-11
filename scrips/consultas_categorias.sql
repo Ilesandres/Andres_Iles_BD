@@ -8,22 +8,34 @@ USE STORE_DANI;
 #ALTER TABLE  PRODUCT MODIFY COLUMN  PRICE FLOAT; 
 
 
+#ALTER TABLE category ADD MODIFY `uuid` CHAR(36) NOT NULL;
+#UPDATE category SET `uuid` = uuid() WHERE `uuid`=' ';
+#ALTER TABLE category ADD UNIQUE (`uuid`);
+
+DELIMITER $$
+CREATE TRIGGER before_insert_category
+BEFORE INSERT ON category
+FOR EACH ROW
+BEGIN
+	IF NEW.uuid IS NULL OR NEW.uuid ='' THEN 
+		SET NEW.uuid=UUID();
+	END IF;
+END$$
+DELIMITER;
 
 
-SELECT  
-                product.id AS productId,
-                product.name AS productName, 
-                product.stock, 
-                product.price,
-                category.name AS categoryName, 
-                product.isActive,
-                category.id AS valueCategory
-            FROM 
-                category
-            INNER JOIN 
-                product_category ON category.id = product_category.categoryId
-            INNER JOIN 
-                product ON product_category.productId = product.id;
+
+
+
+
+
+
+
+SELECT   product.id AS productId,product.name AS productName, 
+                category.`name` AS categoryName, product.isActive,
+                category.id AS valueCategory FROM category
+            INNER JOIN  productCategory ON cat`category`egory.id = productCategory.categoryId
+            INNER JOIN  product ON productCategory.productId = product.id;
 
 SELECT *FROM category;
 

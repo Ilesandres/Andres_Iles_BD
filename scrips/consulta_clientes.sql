@@ -22,24 +22,18 @@ SHOW CREATE TABLE seller;
 
 
 
-#INSERT INTO CUSTOMER(PERSON_ID) VALUES(5);
+
+
 
 SELECT people.firstName, people.lastName,
 people.address,documentType.id AS docValue, documentType.type,
 people.documentNumber,people.phone, roles.id AS roleValue, roles.name,
 people.id AS valuePerson, people.createdAt, people.updatedAt, people.isActive
  FROM people
-INNER JOIN documentType on people.documentTypeId=documentType.id
-INNER JOIN peopleRol on people.id=peopleRol.peopleId
-INNER JOIN roles on  peopleRol.rolId=roles.id
+INNER JOIN documentType ON people.documentTypeId=documentType.id
+INNER JOIN peopleRol ON people.id=peopleRol.peopleId
+INNER JOIN roles ON  peopleRol.rolId=roles.id WHERE roles.id=1
 ;
 
-SELECT people.firstName, people.lastName, 
-                    people.address, documentType.id AS docValue, documentType.type, 
-                    people.documentNumber, people.phone, roles.id AS roleValue, roles.`name`, 
-                    people.id AS valuePerson, people.createdAt, people.updatedAt, people.isActive
-                FROM people
-                INNER JOIN documentType ON people.documentTypeId = documentType.id
-                INNER JOIN people ON people.id = peopleRol.peopleId
-                WHERE peopleRol.rolId=1 AND  people.firstName like '%%' ORDER BY people.updatedAt DESC;
+
                 
