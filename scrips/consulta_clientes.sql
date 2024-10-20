@@ -23,17 +23,20 @@ SHOW CREATE TABLE seller;
 
 
 
-
-
 SELECT people.firstName, people.lastName,
-people.address,documentType.id AS docValue, documentType.type,
+people.address, documentType.id AS docValue, documentType.type,
 people.documentNumber,people.phone, roles.id AS roleValue, roles.name,
 people.id AS valuePerson, people.createdAt, people.updatedAt, people.isActive
  FROM people
 INNER JOIN documentType ON people.documentTypeId=documentType.id
-INNER JOIN peopleRol ON people.id=peopleRol.peopleId
-INNER JOIN roles ON  peopleRol.rolId=roles.id WHERE roles.id=1
+INNER JOIN `user` ON people.id=`user`.peopleId
+INNER JOIN `userroles` ON `user`.id=`userroles`.userId
+INNER JOIN roles ON  userroles.rolId=roles.id WHERE roles.id=1
 ;
+
+SELECT * FROM people
+WHERE people.id=(SELECT user.peopleId FROM `user` WHERE user.id=1)
+
 
 
                 

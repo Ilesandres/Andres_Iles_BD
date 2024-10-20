@@ -12,16 +12,6 @@ USE STORE_DANI;
 #UPDATE category SET `uuid` = uuid() WHERE `uuid`=' ';
 #ALTER TABLE category ADD UNIQUE (`uuid`);
 
-DELIMITER $$
-CREATE TRIGGER before_insert_category
-BEFORE INSERT ON category
-FOR EACH ROW
-BEGIN
-	IF NEW.uuid IS NULL OR NEW.uuid ='' THEN 
-		SET NEW.uuid=UUID();
-	END IF;
-END$$
-DELIMITER;
 
 
 
