@@ -70,25 +70,25 @@ CREATE TABLE `invoice` (
   `statusId` int(20) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `updatedAt` datetime DEFAULT NULL,
-  `peopleId` int(20) DEFAULT NULL,
   `uuid` char(36) NOT NULL,
   `total` decimal(10,4) DEFAULT NULL,
   `paymentMethod` int(20) DEFAULT NULL,
+  `userId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `statusId` (`statusId`),
-  KEY `peopleId` (`peopleId`),
   KEY `paymentMethod` (`paymentMethod`),
+  KEY `userId` (`userId`),
   CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoicestatus` (`id`),
-  CONSTRAINT `invoice_ibfk_3` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`),
-  CONSTRAINT `invoice_ibfk_4` FOREIGN KEY (`paymentMethod`) REFERENCES `paymentmethod` (`id`)
+  CONSTRAINT `invoice_ibfk_4` FOREIGN KEY (`paymentMethod`) REFERENCES `paymentmethod` (`id`),
+  CONSTRAINT `invoice_ibfk_5` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `invoice` */
 
-insert  into `invoice`(`id`,`statusId`,`createdAt`,`updatedAt`,`peopleId`,`uuid`,`total`,`paymentMethod`) values 
-(1,1,'2024-10-20 12:09:58',NULL,1,'51f3c79f-8808-11ef-ade4-0ae0afa00364',NULL,1),
-(2,2,'2024-10-20 12:10:01',NULL,1,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1);
+insert  into `invoice`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`paymentMethod`,`userId`) values 
+(1,1,'2024-10-22 13:37:16',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',NULL,1,1),
+(2,2,'2024-10-22 13:37:22',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1,2);
 
 /*Table structure for table `invoiceproduct` */
 
@@ -174,10 +174,10 @@ DROP TABLE IF EXISTS `paymentgatewayrecords`;
 CREATE TABLE `paymentgatewayrecords` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `response` text DEFAULT NULL,
-  `paymentsMethod` int(20) DEFAULT NULL,
+  `invoiceId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `paymentsMethod` (`paymentsMethod`),
-  CONSTRAINT `paymentgatewayrecords_ibfk_1` FOREIGN KEY (`paymentsMethod`) REFERENCES `paymentmethod` (`id`)
+  KEY `invoiceId` (`invoiceId`),
+  CONSTRAINT `paymentgatewayrecords_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `paymentgatewayrecords` */
@@ -462,23 +462,6 @@ insert  into `userroles`(`id`,`rolId`,`uuid`,`userId`) values
 (4,2,'1a7f7794-8a7a-11ef-9c33-0ae0afa00364',4),
 (5,2,'a40fbf87-8a7b-11ef-907d-0ae0afa00364',1),
 (6,1,'62227167-8f02-11ef-98bf-0ae0afa00364',4);
-
-/*Table structure for table `userstore` */
-
-DROP TABLE IF EXISTS `userstore`;
-
-CREATE TABLE `userstore` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `userId` int(20) DEFAULT NULL,
-  `storeId` int(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `userId` (`userId`),
-  KEY `storeId` (`storeId`),
-  CONSTRAINT `userstore_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `userstore_ibfk_2` FOREIGN KEY (`storeId`) REFERENCES `store` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `userstore` */
 
 /* Trigger structure for table `category` */
 
