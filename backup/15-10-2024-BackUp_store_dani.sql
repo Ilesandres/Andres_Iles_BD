@@ -52,14 +52,15 @@ CREATE TABLE `documenttype` (
   `uuid` char(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `documenttype` */
 
 insert  into `documenttype`(`id`,`type`,`uuid`) values 
 (4,'T.I','5edbe3a6-8804-11ef-ade4-0ae0afa00364'),
 (5,'C.C','5edbe5dc-8804-11ef-ade4-0ae0afa00364'),
-(6,'C.E','5edbe67d-8804-11ef-ade4-0ae0afa00364');
+(6,'C.E','5edbe67d-8804-11ef-ade4-0ae0afa00364'),
+(7,'r.c','27d98b85-9246-11ef-b347-0ae0afa00364');
 
 /*Table structure for table `invoice` */
 
@@ -222,10 +223,10 @@ CREATE TABLE `people` (
 /*Data for the table `people` */
 
 insert  into `people`(`id`,`firstName`,`lastName`,`address`,`documentTypeId`,`documentNumber`,`phone`,`createdAt`,`updatedAt`,`isActive`,`uuid`) values 
-(1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-20 11:43:13','2024-10-20 11:43:13',1,'f5e18d0a-8a78-11ef-9c33-0ae0afa00364'),
-(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-20 11:44:27','2024-10-20 11:44:27',1,'f5e21893-8a78-11ef-9c33-0ae0afa00364'),
+(1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-24 15:25:07','2024-10-24 15:25:07',1,'f5e18d0a-8a78-11ef-9c33-0ae0afa00364'),
+(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-24 15:25:13','2024-10-24 15:25:13',1,'f5e21893-8a78-11ef-9c33-0ae0afa00364'),
 (3,'Camilo ','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-20 11:43:12','2024-10-20 11:43:12',1,'f5e2198a-8a78-11ef-9c33-0ae0afa00364'),
-(4,'Sarah M','mandrogan','centro',5,'1245002','3226440156','2024-10-20 12:30:42','2024-10-20 12:30:42',0,'f5e21a2f-8a78-11ef-9c33-0ae0afa00364');
+(4,'Sarah M','mandrogan','centro',5,'1245002','3226440156','2024-10-24 15:25:10','2024-10-24 15:25:10',1,'f5e21a2f-8a78-11ef-9c33-0ae0afa00364');
 
 /*Table structure for table `product` */
 
@@ -247,7 +248,7 @@ CREATE TABLE `product` (
 /*Data for the table `product` */
 
 insert  into `product`(`id`,`name`,`stock`,`price`,`createdAt`,`updatedAt`,`isActive`,`uuid`) values 
-(2,'Leche',25,4000,'2024-10-02 10:01:00','2024-10-20 12:30:29',1,'52a9da61-8a7c-11ef-907d-0ae0afa00364'),
+(2,'Leche',25,4000,'2024-10-02 10:01:00','2024-10-24 15:26:30',1,'52a9da61-8a7c-11ef-907d-0ae0afa00364'),
 (3,'Pollo (kg)',15,8000,'2024-10-02 10:02:00','2024-10-16 10:39:37',1,'52a9ed50-8a7c-11ef-907d-0ae0afa00364'),
 (4,'Carne de Res (kg)',10,18000,'2024-10-02 10:03:00','2024-10-02 10:03:00',1,'52a9ee30-8a7c-11ef-907d-0ae0afa00364'),
 (5,'Manzana (unidad)',50,2000,'2024-10-02 10:04:00','2024-10-02 10:04:00',1,'52a9eed3-8a7c-11ef-907d-0ae0afa00364'),
