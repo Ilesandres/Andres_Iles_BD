@@ -16,11 +16,11 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`store_dani` /*!40100 DEFAULT CHARACTER 
 
 USE `store_dani`;
 
-/*Table structure for table `category` */
+/*Table structure for table `categories` */
 
-DROP TABLE IF EXISTS `category`;
+DROP TABLE IF EXISTS `categories`;
 
-CREATE TABLE `category` (
+CREATE TABLE `categories` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `description` tinytext DEFAULT NULL,
@@ -29,9 +29,9 @@ CREATE TABLE `category` (
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `category` */
+/*Data for the table `categories` */
 
-insert  into `category`(`id`,`name`,`description`,`uuid`) values 
+insert  into `categories`(`id`,`name`,`description`,`uuid`) values 
 (10,'granos','granos como arroz, frijol, arveja..','2fe05665-87e5-11ef-9451-0ae0afa00364'),
 (11,'Bedidas enbotelladas','bebidas de todo tipo consumo humano','2fe166ca-87e5-11ef-9451-0ae0afa00364'),
 (12,'frutas y verduras','verduras y demas naturales','2fe16828-87e5-11ef-9451-0ae0afa00364'),
@@ -42,11 +42,24 @@ insert  into `category`(`id`,`name`,`description`,`uuid`) values
 (17,'ropa','ropas de todo tipo','2fe16b2d-87e5-11ef-9451-0ae0afa00364'),
 (18,'canasta diaria','','3379c83e-8b54-11ef-9886-0ae0afa00364');
 
-/*Table structure for table `documenttype` */
+/*Table structure for table `companys` */
 
-DROP TABLE IF EXISTS `documenttype`;
+DROP TABLE IF EXISTS `companys`;
 
-CREATE TABLE `documenttype` (
+CREATE TABLE `companys` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` tinytext DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `companys` */
+
+/*Table structure for table `documenttypes` */
+
+DROP TABLE IF EXISTS `documenttypes`;
+
+CREATE TABLE `documenttypes` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `type` varchar(45) DEFAULT NULL,
   `uuid` char(36) NOT NULL,
@@ -54,19 +67,54 @@ CREATE TABLE `documenttype` (
   UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `documenttype` */
+/*Data for the table `documenttypes` */
 
-insert  into `documenttype`(`id`,`type`,`uuid`) values 
+insert  into `documenttypes`(`id`,`type`,`uuid`) values 
 (4,'T.I','5edbe3a6-8804-11ef-ade4-0ae0afa00364'),
 (5,'C.C','5edbe5dc-8804-11ef-ade4-0ae0afa00364'),
 (6,'C.E','5edbe67d-8804-11ef-ade4-0ae0afa00364'),
 (7,'r.c','27d98b85-9246-11ef-b347-0ae0afa00364');
 
-/*Table structure for table `invoice` */
+/*Table structure for table `invoiceproduct` */
 
-DROP TABLE IF EXISTS `invoice`;
+DROP TABLE IF EXISTS `invoiceproduct`;
 
-CREATE TABLE `invoice` (
+CREATE TABLE `invoiceproduct` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `productId` int(20) DEFAULT NULL,
+  `invoiceId` int(20) DEFAULT NULL,
+  `uuid` char(36) DEFAULT NULL,
+  `quantity` int(10) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `productId` (`productId`),
+  KEY `invoiceId` (`invoiceId`),
+  CONSTRAINT `invoiceproduct_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`),
+  CONSTRAINT `invoiceproduct_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoices` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `invoiceproduct` */
+
+insert  into `invoiceproduct`(`id`,`productId`,`invoiceId`,`uuid`,`quantity`) values 
+(1,11,1,'aa1651a3-880b-11ef-ade4-0ae0afa00364',2),
+(2,2,4,'b3dcb730-96e4-11ef-b93c-0ae0afa00364',2),
+(3,2,5,'f0babfeb-96e4-11ef-b93c-0ae0afa00364',1),
+(4,3,5,'f0bb8a0a-96e4-11ef-b93c-0ae0afa00364',2),
+(5,3,6,'5f92e1ef-96e5-11ef-b93c-0ae0afa00364',2),
+(6,3,7,'8224b1a1-96e5-11ef-b93c-0ae0afa00364',1),
+(7,3,8,'72b1e6f4-97a7-11ef-ac34-0ae0afa00364',2),
+(8,4,9,'8234c71f-97a7-11ef-ac34-0ae0afa00364',3),
+(9,11,9,'8235bdcf-97a7-11ef-ac34-0ae0afa00364',2),
+(11,3,11,'ba93296b-9972-11ef-8688-0ae0afa00364',1),
+(14,2,14,'07eea25b-9974-11ef-8688-0ae0afa00364',1),
+(15,2,15,'eaf264ce-9be7-11ef-a3ca-0ae0afa00364',2),
+(16,5,15,'eaf2beb8-9be7-11ef-a3ca-0ae0afa00364',10);
+
+/*Table structure for table `invoices` */
+
+DROP TABLE IF EXISTS `invoices`;
+
+CREATE TABLE `invoices` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `statusId` int(20) DEFAULT NULL,
   `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -80,39 +128,25 @@ CREATE TABLE `invoice` (
   KEY `statusId` (`statusId`),
   KEY `paymentMethod` (`paymentMethod`),
   KEY `userId` (`userId`),
-  CONSTRAINT `invoice_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoicestatus` (`id`),
-  CONSTRAINT `invoice_ibfk_4` FOREIGN KEY (`paymentMethod`) REFERENCES `paymentmethod` (`id`),
-  CONSTRAINT `invoice_ibfk_5` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `invoices_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoicestatus` (`id`),
+  CONSTRAINT `invoices_ibfk_4` FOREIGN KEY (`paymentMethod`) REFERENCES `paymentmethods` (`id`),
+  CONSTRAINT `invoices_ibfk_5` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `invoice` */
+/*Data for the table `invoices` */
 
-insert  into `invoice`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`paymentMethod`,`userId`) values 
+insert  into `invoices`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`paymentMethod`,`userId`) values 
 (1,1,'2024-10-22 13:37:16',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',NULL,1,1),
-(2,2,'2024-10-22 13:37:22',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1,2);
-
-/*Table structure for table `invoiceproduct` */
-
-DROP TABLE IF EXISTS `invoiceproduct`;
-
-CREATE TABLE `invoiceproduct` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `productId` int(20) DEFAULT NULL,
-  `invoiceId` int(20) DEFAULT NULL,
-  `uuid` char(36) DEFAULT NULL,
-  `cant` int(10) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `productId` (`productId`),
-  KEY `invoiceId` (`invoiceId`),
-  CONSTRAINT `invoiceproduct_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-  CONSTRAINT `invoiceproduct_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `invoiceproduct` */
-
-insert  into `invoiceproduct`(`id`,`productId`,`invoiceId`,`uuid`,`cant`) values 
-(1,11,1,'aa1651a3-880b-11ef-ade4-0ae0afa00364',2);
+(2,2,'2024-10-22 13:37:22',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1,2),
+(4,1,'2024-10-30 12:30:48',NULL,'b3dc508f-96e4-11ef-b93c-0ae0afa00364',8000.0000,1,8),
+(5,1,'2024-10-30 12:32:30',NULL,'f0ba3641-96e4-11ef-b93c-0ae0afa00364',20000.0000,1,8),
+(6,1,'2024-10-30 12:35:36',NULL,'5f9282d3-96e5-11ef-b93c-0ae0afa00364',16000.0000,1,8),
+(7,1,'2024-10-30 12:36:34',NULL,'822440fe-96e5-11ef-b93c-0ae0afa00364',8000.0000,1,8),
+(8,1,'2024-10-31 11:44:51',NULL,'72afa5c8-97a7-11ef-ac34-0ae0afa00364',16000.0000,1,2),
+(9,1,'2024-10-31 11:45:17',NULL,'82343c81-97a7-11ef-ac34-0ae0afa00364',56400.0000,1,2),
+(11,1,'2024-11-02 18:32:30',NULL,'ba910b3f-9972-11ef-8688-0ae0afa00364',8000.0000,1,5),
+(14,1,'2024-11-02 18:41:50',NULL,'07ee4612-9974-11ef-8688-0ae0afa00364',4000.0000,1,4),
+(15,1,'2024-11-05 21:36:25',NULL,'eaf1b85b-9be7-11ef-a3ca-0ae0afa00364',28000.0000,1,9);
 
 /*Table structure for table `invoicestatus` */
 
@@ -135,11 +169,11 @@ insert  into `invoicestatus`(`id`,`name`,`description`,`uuid`) values
 (1,'pagado',NULL,'7c5bf6dd-880d-11ef-ade4-0ae0afa00364'),
 (2,'cancelado',NULL,'841f461f-880d-11ef-ade4-0ae0afa00364');
 
-/*Table structure for table `order` */
+/*Table structure for table `orders` */
 
-DROP TABLE IF EXISTS `order`;
+DROP TABLE IF EXISTS `orders`;
 
-CREATE TABLE `order` (
+CREATE TABLE `orders` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `invoiceId` int(20) DEFAULT NULL,
   `statusId` int(20) DEFAULT NULL,
@@ -148,11 +182,11 @@ CREATE TABLE `order` (
   PRIMARY KEY (`id`),
   KEY `invoiceId` (`invoiceId`),
   KEY `statusId` (`statusId`),
-  CONSTRAINT `order_ibfk_1` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`),
-  CONSTRAINT `order_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `orderstatus` (`id`)
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`invoiceId`) REFERENCES `invoices` (`id`),
+  CONSTRAINT `orders_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `orderstatus` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `order` */
+/*Data for the table `orders` */
 
 /*Table structure for table `orderstatus` */
 
@@ -178,31 +212,46 @@ CREATE TABLE `paymentgatewayrecords` (
   `invoiceId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `invoiceId` (`invoiceId`),
-  CONSTRAINT `paymentgatewayrecords_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoice` (`id`)
+  CONSTRAINT `paymentgatewayrecords_ibfk_2` FOREIGN KEY (`invoiceId`) REFERENCES `invoices` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `paymentgatewayrecords` */
 
-/*Table structure for table `paymentmethod` */
+/*Table structure for table `paymenthgatewayavalaibles` */
 
-DROP TABLE IF EXISTS `paymentmethod`;
+DROP TABLE IF EXISTS `paymenthgatewayavalaibles`;
 
-CREATE TABLE `paymentmethod` (
+CREATE TABLE `paymenthgatewayavalaibles` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `paymenthMethodId` int(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `paymenthMethodId` (`paymenthMethodId`),
+  CONSTRAINT `paymenthgatewayavalaibles_ibfk_1` FOREIGN KEY (`paymenthMethodId`) REFERENCES `paymentmethods` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `paymenthgatewayavalaibles` */
+
+/*Table structure for table `paymentmethods` */
+
+DROP TABLE IF EXISTS `paymentmethods`;
+
+CREATE TABLE `paymentmethods` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `method` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `paymentmethod` */
+/*Data for the table `paymentmethods` */
 
-insert  into `paymentmethod`(`id`,`method`) values 
+insert  into `paymentmethods`(`id`,`method`) values 
 (1,'Efectivo');
 
-/*Table structure for table `people` */
+/*Table structure for table `peoples` */
 
-DROP TABLE IF EXISTS `people`;
+DROP TABLE IF EXISTS `peoples`;
 
-CREATE TABLE `people` (
+CREATE TABLE `peoples` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `firstName` varchar(30) DEFAULT NULL,
   `lastName` varchar(30) DEFAULT NULL,
@@ -214,25 +263,70 @@ CREATE TABLE `people` (
   `updatedAt` datetime DEFAULT NULL,
   `isActive` tinyint(1) DEFAULT 0,
   `uuid` char(36) NOT NULL,
+  `userId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `documentTypeId` (`documentTypeId`),
-  CONSTRAINT `people_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `documenttype` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  KEY `userId` (`userId`),
+  CONSTRAINT `peoples_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `documenttypes` (`id`),
+  CONSTRAINT `peoples_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `people` */
+/*Data for the table `peoples` */
 
-insert  into `people`(`id`,`firstName`,`lastName`,`address`,`documentTypeId`,`documentNumber`,`phone`,`createdAt`,`updatedAt`,`isActive`,`uuid`) values 
-(1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-24 15:25:07','2024-10-24 15:25:07',1,'f5e18d0a-8a78-11ef-9c33-0ae0afa00364'),
-(2,'Camilo','Rendon','Vereda Palermo norte',5,'12536842','3215324830','2024-10-24 15:25:13','2024-10-24 15:25:13',1,'f5e21893-8a78-11ef-9c33-0ae0afa00364'),
-(3,'Camilo ','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-20 11:43:12','2024-10-20 11:43:12',1,'f5e2198a-8a78-11ef-9c33-0ae0afa00364'),
-(4,'Sarah M','mandrogan','centro',5,'1245002','3226440156','2024-10-24 15:25:10','2024-10-24 15:25:10',1,'f5e21a2f-8a78-11ef-9c33-0ae0afa00364');
+insert  into `peoples`(`id`,`firstName`,`lastName`,`address`,`documentTypeId`,`documentNumber`,`phone`,`createdAt`,`updatedAt`,`isActive`,`uuid`,`userId`) values 
+(1,'Juan','Perez','Calle 45 22-33',4,'1234567890','32132145','2024-10-29 16:08:59','2024-10-24 15:25:07',1,'f5e18d0a-8a78-11ef-9c33-0ae0afa00364',3),
+(2,'Camilo C','Rendon ','Vereda Palermo norte',5,'12536842','3215324830','2024-11-03 07:42:09','2024-11-03 07:42:09',1,'f5e21893-8a78-11ef-9c33-0ae0afa00364',4),
+(3,'Camilo ','Calderon','calle 5 #3 sur',5,'1256891','3227569852','2024-10-29 16:08:46','2024-10-20 11:43:12',1,'f5e2198a-8a78-11ef-9c33-0ae0afa00364',1),
+(4,'Sarah M','mandrogan','centro',5,'1245002','3226440156','2024-10-29 16:08:55','2024-10-24 15:25:10',1,'f5e21a2f-8a78-11ef-9c33-0ae0afa00364',2),
+(5,'Andres','Sambony','mocoa_putumayo_colombia',4,'12345686','3227349082','2024-10-29 17:37:15',NULL,1,'58cfec2d-9646-11ef-89a7-0ae0afa00364',5),
+(8,'Final','user','mocoa_putumayo_colombia',4,'2222222','32333','2024-10-29 17:43:21',NULL,1,'32e54b5b-9647-11ef-89a7-0ae0afa00364',8),
+(9,'Daniel ','Morales','calle 3 sur- AV northe',5,'124583','3224756839','2024-11-02 19:02:00',NULL,1,'d933f6c6-9976-11ef-8688-0ae0afa00364',9),
+(11,'Andres','Iles','carlos Galan',5,'124568','3124569834','2024-11-02 20:58:10',NULL,1,'140fef63-9987-11ef-8688-0ae0afa00364',11),
+(19,'admin','admin','center',5,'0','3333','2024-11-03 07:51:45',NULL,1,'621a7fae-99e2-11ef-8465-0ae0afa00364',19);
 
-/*Table structure for table `product` */
+/*Table structure for table `productcategories` */
 
-DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `productcategories`;
 
-CREATE TABLE `product` (
+CREATE TABLE `productcategories` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `categoryId` int(20) DEFAULT NULL,
+  `productId` int(20) DEFAULT NULL,
+  `uuid` char(36) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `categoryId` (`categoryId`),
+  KEY `productId` (`productId`),
+  CONSTRAINT `productcategories_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`),
+  CONSTRAINT `productcategories_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `productcategories` */
+
+insert  into `productcategories`(`id`,`categoryId`,`productId`,`uuid`) values 
+(31,13,4,'5d878e8b-8a7d-11ef-907d-0ae0afa00364'),
+(32,12,5,'5d878f21-8a7d-11ef-907d-0ae0afa00364'),
+(33,11,6,'5d878fb0-8a7d-11ef-907d-0ae0afa00364'),
+(34,15,7,'5d87903b-8a7d-11ef-907d-0ae0afa00364'),
+(35,14,8,'5d8790c3-8a7d-11ef-907d-0ae0afa00364'),
+(36,15,9,'5d87914c-8a7d-11ef-907d-0ae0afa00364'),
+(38,16,11,'5d8791d3-8a7d-11ef-907d-0ae0afa00364'),
+(39,11,12,'5d879260-8a7d-11ef-907d-0ae0afa00364'),
+(61,13,3,'d9a570de-8bd4-11ef-a996-0ae0afa00364'),
+(65,14,2,'d65bd17e-96e4-11ef-b93c-0ae0afa00364'),
+(66,11,2,'d65cafb2-96e4-11ef-b93c-0ae0afa00364'),
+(67,18,2,'d65cfdea-96e4-11ef-b93c-0ae0afa00364'),
+(68,14,21,'892baccb-96f5-11ef-b93c-0ae0afa00364'),
+(69,18,21,'892c1545-96f5-11ef-b93c-0ae0afa00364'),
+(72,14,23,'0aba7bfb-96f6-11ef-b93c-0ae0afa00364'),
+(73,18,23,'0abc8378-96f6-11ef-b93c-0ae0afa00364');
+
+/*Table structure for table `products` */
+
+DROP TABLE IF EXISTS `products`;
+
+CREATE TABLE `products` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
@@ -243,66 +337,31 @@ CREATE TABLE `product` (
   `uuid` char(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `product` */
+/*Data for the table `products` */
 
-insert  into `product`(`id`,`name`,`stock`,`price`,`createdAt`,`updatedAt`,`isActive`,`uuid`) values 
-(2,'Leche',25,4000,'2024-10-02 10:01:00','2024-10-24 15:26:30',1,'52a9da61-8a7c-11ef-907d-0ae0afa00364'),
-(3,'Pollo (kg)',15,8000,'2024-10-02 10:02:00','2024-10-16 10:39:37',1,'52a9ed50-8a7c-11ef-907d-0ae0afa00364'),
-(4,'Carne de Res (kg)',10,18000,'2024-10-02 10:03:00','2024-10-02 10:03:00',1,'52a9ee30-8a7c-11ef-907d-0ae0afa00364'),
-(5,'Manzana (unidad)',50,2000,'2024-10-02 10:04:00','2024-10-02 10:04:00',1,'52a9eed3-8a7c-11ef-907d-0ae0afa00364'),
+insert  into `products`(`id`,`name`,`stock`,`price`,`createdAt`,`updatedAt`,`isActive`,`uuid`) values 
+(2,'Leche',22,4000,'2024-10-02 10:01:00','2024-10-30 14:25:22',1,'52a9da61-8a7c-11ef-907d-0ae0afa00364'),
+(3,'Pollo (kg)',6,8000,'2024-10-02 10:02:00','2024-10-16 10:39:37',1,'52a9ed50-8a7c-11ef-907d-0ae0afa00364'),
+(4,'Carne de Res (kg)',7,18000,'2024-10-02 10:03:00','2024-10-02 10:03:00',1,'52a9ee30-8a7c-11ef-907d-0ae0afa00364'),
+(5,'Manzana (unidad)',39,2000,'2024-10-02 10:04:00','2024-10-30 14:25:31',1,'52a9eed3-8a7c-11ef-907d-0ae0afa00364'),
 (6,'Jugo (botella)',20,3000,'2024-10-02 10:05:00','2024-10-20 12:30:14',1,'52a9ef69-8a7c-11ef-907d-0ae0afa00364'),
 (7,'Huevo (docena)',30,5000,'2024-10-02 10:06:00','2024-10-02 10:06:00',1,'52a9f001-8a7c-11ef-907d-0ae0afa00364'),
 (8,'Tetra Pak',40,3000,'2024-10-02 10:07:00','2024-10-02 10:07:00',1,'52a9f094-8a7c-11ef-907d-0ae0afa00364'),
 (9,'Hueso perro',10,2500,'2024-10-02 10:08:00','2024-10-02 10:08:00',1,'52a9f123-8a7c-11ef-907d-0ae0afa00364'),
-(11,'Galletas xunidad',18,1200,'2024-10-02 16:33:00',NULL,1,'52a9f1b4-8a7c-11ef-907d-0ae0afa00364'),
+(11,'Galletas xunidad',16,1200,'2024-10-02 16:33:00',NULL,1,'52a9f1b4-8a7c-11ef-907d-0ae0afa00364'),
 (12,'agua xL(botella)',18,1500,'2024-10-03 21:26:59',NULL,1,'52a9f24e-8a7c-11ef-907d-0ae0afa00364'),
-(14,'Arroz 1000g',10,4500,'2024-10-10 16:35:32',NULL,1,'52a9f2df-8a7c-11ef-907d-0ae0afa00364'),
 (16,'Panela x1kl',12,4500,'2024-10-15 19:21:48',NULL,1,'a1eee3af-8b54-11ef-9886-0ae0afa00364'),
-(20,'Panela x1kl',12,4500,'2024-10-16 09:43:55',NULL,1,'11c3b277-8bcd-11ef-a996-0ae0afa00364');
+(20,'Panela x1kl',12,4500,'2024-10-16 09:43:55',NULL,1,'11c3b277-8bcd-11ef-a996-0ae0afa00364'),
+(21,'Panela x1kl',12,4500,'2024-10-30 14:31:18',NULL,1,'8925c2d7-96f5-11ef-b93c-0ae0afa00364'),
+(23,'Panela x1kl',12,4500,'2024-10-30 14:34:55',NULL,1,'0ab68d8f-96f6-11ef-b93c-0ae0afa00364');
 
-/*Table structure for table `productcategory` */
+/*Table structure for table `productsdesc` */
 
-DROP TABLE IF EXISTS `productcategory`;
+DROP TABLE IF EXISTS `productsdesc`;
 
-CREATE TABLE `productcategory` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `categoryId` int(20) DEFAULT NULL,
-  `productId` int(20) DEFAULT NULL,
-  `uuid` char(36) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `categoryId` (`categoryId`),
-  KEY `productId` (`productId`),
-  CONSTRAINT `productcategory_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `category` (`id`),
-  CONSTRAINT `productcategory_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `productcategory` */
-
-insert  into `productcategory`(`id`,`categoryId`,`productId`,`uuid`) values 
-(31,13,4,'5d878e8b-8a7d-11ef-907d-0ae0afa00364'),
-(32,12,5,'5d878f21-8a7d-11ef-907d-0ae0afa00364'),
-(33,11,6,'5d878fb0-8a7d-11ef-907d-0ae0afa00364'),
-(34,15,7,'5d87903b-8a7d-11ef-907d-0ae0afa00364'),
-(35,14,8,'5d8790c3-8a7d-11ef-907d-0ae0afa00364'),
-(36,15,9,'5d87914c-8a7d-11ef-907d-0ae0afa00364'),
-(38,16,11,'5d8791d3-8a7d-11ef-907d-0ae0afa00364'),
-(39,11,12,'5d879260-8a7d-11ef-907d-0ae0afa00364'),
-(41,10,14,'5d8792e8-8a7d-11ef-907d-0ae0afa00364'),
-(56,14,20,'11c53a94-8bcd-11ef-a996-0ae0afa00364'),
-(57,18,20,'11c58971-8bcd-11ef-a996-0ae0afa00364'),
-(61,13,3,'d9a570de-8bd4-11ef-a996-0ae0afa00364'),
-(62,11,2,'0058b7e5-8f09-11ef-98bf-0ae0afa00364'),
-(63,18,2,'00591289-8f09-11ef-98bf-0ae0afa00364'),
-(64,14,2,'0059cf2b-8f09-11ef-98bf-0ae0afa00364');
-
-/*Table structure for table `productdesc` */
-
-DROP TABLE IF EXISTS `productdesc`;
-
-CREATE TABLE `productdesc` (
+CREATE TABLE `productsdesc` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `productId` int(20) DEFAULT NULL,
   `discount` tinyint(1) DEFAULT NULL,
@@ -310,12 +369,12 @@ CREATE TABLE `productdesc` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `productId` (`productId`),
-  CONSTRAINT `productdesc_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`)
+  CONSTRAINT `productsdesc_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `productdesc` */
+/*Data for the table `productsdesc` */
 
-insert  into `productdesc`(`id`,`productId`,`discount`,`uuid`) values 
+insert  into `productsdesc`(`id`,`productId`,`discount`,`uuid`) values 
 (1,2,127,'46bd3154-8afb-11ef-b3f0-0ae0afa00364'),
 (2,3,100,'46be083f-8afb-11ef-b3f0-0ae0afa00364'),
 (4,4,127,'48bfaaff-8afd-11ef-b3f0-0ae0afa00364');
@@ -331,9 +390,9 @@ CREATE TABLE `productsstore` (
   PRIMARY KEY (`id`),
   KEY `productid` (`productid`),
   KEY `storeId` (`storeId`),
-  CONSTRAINT `productsstore_ibfk_1` FOREIGN KEY (`productid`) REFERENCES `product` (`id`),
-  CONSTRAINT `productsstore_ibfk_2` FOREIGN KEY (`storeId`) REFERENCES `store` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `productsstore_ibfk_1` FOREIGN KEY (`productid`) REFERENCES `products` (`id`),
+  CONSTRAINT `productsstore_ibfk_2` FOREIGN KEY (`storeId`) REFERENCES `stores` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `productsstore` */
 
@@ -348,31 +407,34 @@ insert  into `productsstore`(`id`,`productid`,`storeId`) values
 (8,9,1),
 (9,11,1),
 (10,12,1),
-(11,14,1),
 (12,16,1),
-(13,20,1);
+(13,20,1),
+(15,23,1);
 
-/*Table structure for table `productsupplier` */
+/*Table structure for table `productssupplier` */
 
-DROP TABLE IF EXISTS `productsupplier`;
+DROP TABLE IF EXISTS `productssupplier`;
 
-CREATE TABLE `productsupplier` (
+CREATE TABLE `productssupplier` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `productId` int(20) DEFAULT NULL,
   `uuid` char(36) NOT NULL,
   `userId` int(20) DEFAULT NULL,
+  `companyId` int(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`),
   KEY `productId` (`productId`),
   KEY `userId` (`userId`),
-  CONSTRAINT `productsupplier_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `product` (`id`),
-  CONSTRAINT `productsupplier_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  KEY `companyId` (`companyId`),
+  CONSTRAINT `productssupplier_ibfk_1` FOREIGN KEY (`productId`) REFERENCES `products` (`id`),
+  CONSTRAINT `productssupplier_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`),
+  CONSTRAINT `productssupplier_ibfk_3` FOREIGN KEY (`companyId`) REFERENCES `companys` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `productsupplier` */
+/*Data for the table `productssupplier` */
 
-insert  into `productsupplier`(`id`,`productId`,`uuid`,`userId`) values 
-(1,2,'2a310bab-8afe-11ef-b3f0-0ae0afa00364',NULL);
+insert  into `productssupplier`(`id`,`productId`,`uuid`,`userId`,`companyId`) values 
+(1,2,'2a310bab-8afe-11ef-b3f0-0ae0afa00364',NULL,NULL);
 
 /*Table structure for table `roles` */
 
@@ -395,47 +457,21 @@ insert  into `roles`(`id`,`name`,`description`,`uuid`) values
 (3,'Admin',NULL,'329b4608-8aff-11ef-b3f0-0ae0afa00364'),
 (4,'Surtidor',NULL,'497669ad-8aff-11ef-b3f0-0ae0afa00364');
 
-/*Table structure for table `store` */
+/*Table structure for table `stores` */
 
-DROP TABLE IF EXISTS `store`;
+DROP TABLE IF EXISTS `stores`;
 
-CREATE TABLE `store` (
+CREATE TABLE `stores` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `name` varchar(155) NOT NULL,
   `description` text DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-/*Data for the table `store` */
+/*Data for the table `stores` */
 
-insert  into `store`(`id`,`name`,`description`) values 
+insert  into `stores`(`id`,`name`,`description`) values 
 (1,'Store Dani Central',NULL);
-
-/*Table structure for table `user` */
-
-DROP TABLE IF EXISTS `user`;
-
-CREATE TABLE `user` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(20) NOT NULL,
-  `password` varchar(30) NOT NULL,
-  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `updatedAt` datetime DEFAULT NULL,
-  `peopleId` int(20) DEFAULT NULL,
-  `uuid` char(36) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `peopleId` (`peopleId`),
-  CONSTRAINT `user_ibfk_1` FOREIGN KEY (`peopleId`) REFERENCES `people` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `user` */
-
-insert  into `user`(`id`,`username`,`password`,`createdAt`,`updatedAt`,`peopleId`,`uuid`) values 
-(1,'','','2024-10-20 11:10:40',NULL,1,'d9d6617f-8efd-11ef-98bf-0ae0afa00364'),
-(2,'','','2024-10-20 11:40:20',NULL,4,'dc77a6cd-8efd-11ef-98bf-0ae0afa00364'),
-(3,'','','2024-10-20 11:11:01',NULL,3,'e660549e-8efd-11ef-98bf-0ae0afa00364'),
-(4,'','','2024-10-20 11:40:30',NULL,2,'edffd5f7-8efd-11ef-98bf-0ae0afa00364');
 
 /*Table structure for table `userroles` */
 
@@ -451,8 +487,8 @@ CREATE TABLE `userroles` (
   KEY `rolId` (`rolId`),
   KEY `userId` (`userId`),
   CONSTRAINT `userroles_ibfk_2` FOREIGN KEY (`rolId`) REFERENCES `roles` (`id`),
-  CONSTRAINT `userroles_ibfk_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  CONSTRAINT `userroles_ibfk_3` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `userroles` */
 
@@ -462,15 +498,48 @@ insert  into `userroles`(`id`,`rolId`,`uuid`,`userId`) values
 (3,1,'1a7f7702-8a7a-11ef-9c33-0ae0afa00364',3),
 (4,2,'1a7f7794-8a7a-11ef-9c33-0ae0afa00364',4),
 (5,2,'a40fbf87-8a7b-11ef-907d-0ae0afa00364',1),
-(6,1,'62227167-8f02-11ef-98bf-0ae0afa00364',4);
+(6,1,'62227167-8f02-11ef-98bf-0ae0afa00364',4),
+(7,1,'a1e9393e-9646-11ef-89a7-0ae0afa00364',5),
+(8,1,'32e5e514-9647-11ef-89a7-0ae0afa00364',8),
+(9,1,'d9354426-9976-11ef-8688-0ae0afa00364',9),
+(11,2,'1410fc27-9987-11ef-8688-0ae0afa00364',11),
+(19,2,'621d61d6-99e2-11ef-8465-0ae0afa00364',19);
 
-/* Trigger structure for table `category` */
+/*Table structure for table `users` */
+
+DROP TABLE IF EXISTS `users`;
+
+CREATE TABLE `users` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(200) DEFAULT NULL,
+  `password` varchar(200) DEFAULT NULL,
+  `createdAt` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `updatedAt` datetime DEFAULT NULL,
+  `uuid` char(36) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `users` */
+
+insert  into `users`(`id`,`username`,`password`,`createdAt`,`updatedAt`,`uuid`) values 
+(1,'','','2024-10-20 11:10:40',NULL,'d9d6617f-8efd-11ef-98bf-0ae0afa00364'),
+(2,'','','2024-10-20 11:40:20',NULL,'dc77a6cd-8efd-11ef-98bf-0ae0afa00364'),
+(3,'','','2024-10-20 11:11:01',NULL,'e660549e-8efd-11ef-98bf-0ae0afa00364'),
+(4,'','','2024-10-20 11:40:30',NULL,'edffd5f7-8efd-11ef-98bf-0ae0afa00364'),
+(5,'','','2024-10-29 17:37:15',NULL,'58cf51a7-9646-11ef-89a7-0ae0afa00364'),
+(8,'','','2024-10-29 17:43:21',NULL,'32e053c1-9647-11ef-89a7-0ae0afa00364'),
+(9,'','','2024-11-02 19:02:00',NULL,'d92dfcc1-9976-11ef-8688-0ae0afa00364'),
+(11,'Ilesandres6','$2b$13$vsGSsU.04PdexVFrk6Q/0eB.HD7NDCWtw2RhO4GdWTI6P9.uRpH/O','2024-11-02 20:58:10',NULL,'140c7391-9987-11ef-8688-0ae0afa00364'),
+(19,'admin','$2b$13$itb7swrpSjjDgKNQdRNisekSCI3HyeY3K0v/A7s3acYyVjW8R4a6a','2024-11-03 07:51:45',NULL,'6217bc1f-99e2-11ef-8465-0ae0afa00364');
+
+/* Trigger structure for table `categories` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_category` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_category` BEFORE INSERT ON `category` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_category` BEFORE INSERT ON `categories` FOR EACH ROW 
 begin
 	IF NEW.uuid IS NULL OR NEW.uuid ='' THEN 
 		SET NEW.uuid=UUID();
@@ -480,33 +549,17 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `documenttype` */
+/* Trigger structure for table `documenttypes` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_typeDni` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_typeDni` BEFORE INSERT ON `documenttype` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_typeDni` BEFORE INSERT ON `documenttypes` FOR EACH ROW 
 BEGIN 
 	if NEW.uuid IS NULL OR NEW.uuid ='' THEN
 	SET NEW.uuid =UUID();
 	END IF;
-END */$$
-
-
-DELIMITER ;
-
-/* Trigger structure for table `invoice` */
-
-DELIMITER $$
-
-/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_invoice` */$$
-
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_invoice` BEFORE INSERT ON `invoice` FOR EACH ROW 
-BEGIN
-  IF NEW.uuid IS NULL OR NEW.uuid = '' THEN
-    SET NEW.uuid = UUID();
-  END IF;
 END */$$
 
 
@@ -528,6 +581,22 @@ END */$$
 
 DELIMITER ;
 
+/* Trigger structure for table `invoices` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_invoice` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_invoice` BEFORE INSERT ON `invoices` FOR EACH ROW 
+BEGIN
+  IF NEW.uuid IS NULL OR NEW.uuid = '' THEN
+    SET NEW.uuid = UUID();
+  END IF;
+END */$$
+
+
+DELIMITER ;
+
 /* Trigger structure for table `invoicestatus` */
 
 DELIMITER $$
@@ -544,13 +613,13 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `order` */
+/* Trigger structure for table `orders` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_order` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_order` BEFORE INSERT ON `order` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_order` BEFORE INSERT ON `orders` FOR EACH ROW 
 BEGIN 
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
 		SET NEW.uuid=UUID();
@@ -560,13 +629,13 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `people` */
+/* Trigger structure for table `peoples` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_people` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_people` BEFORE INSERT ON `people` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_people` BEFORE INSERT ON `peoples` FOR EACH ROW 
 BEGIN
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN 
 		SET NEW.uuid=UUID();
@@ -576,29 +645,13 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `product` */
-
-DELIMITER $$
-
-/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_product` */$$
-
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product` BEFORE INSERT ON `product` FOR EACH ROW 
-BEGIN
-	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
-		set NEW.uuid=UUID();
-	END IF;
-END */$$
-
-
-DELIMITER ;
-
-/* Trigger structure for table `productcategory` */
+/* Trigger structure for table `productcategories` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_product_category` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product_category` BEFORE INSERT ON `productcategory` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product_category` BEFORE INSERT ON `productcategories` FOR EACH ROW 
 BEGIN 
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
 	 SET NEW.uuid=UUID();
@@ -608,13 +661,29 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `productdesc` */
+/* Trigger structure for table `products` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_product` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product` BEFORE INSERT ON `products` FOR EACH ROW 
+BEGIN
+	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
+		set NEW.uuid=UUID();
+	END IF;
+END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `productsdesc` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_product_desc` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product_desc` BEFORE INSERT ON `productdesc` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_product_desc` BEFORE INSERT ON `productsdesc` FOR EACH ROW 
 BEGIN 
 	IF NEW.uuid IS NULL OR NEW.uuid ='' THEN
 		SET NEW.uuid=UUID();
@@ -624,13 +693,13 @@ END */$$
 
 DELIMITER ;
 
-/* Trigger structure for table `productsupplier` */
+/* Trigger structure for table `productssupplier` */
 
 DELIMITER $$
 
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_producsupplier` */$$
 
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_producsupplier` BEFORE INSERT ON `productsupplier` FOR EACH ROW 
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_producsupplier` BEFORE INSERT ON `productssupplier` FOR EACH ROW 
 BEGIN
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN 
 		SET NEW.uuid=UUID();
@@ -647,22 +716,6 @@ DELIMITER $$
 /*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_rol` */$$
 
 /*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_rol` BEFORE INSERT ON `roles` FOR EACH ROW 
-BEGIN
-	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
-		SET NEW.uuid=UUID();
-	END IF;
-END */$$
-
-
-DELIMITER ;
-
-/* Trigger structure for table `user` */
-
-DELIMITER $$
-
-/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_user` */$$
-
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_user` BEFORE INSERT ON `user` FOR EACH ROW 
 BEGIN
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
 		SET NEW.uuid=UUID();
@@ -697,6 +750,22 @@ DELIMITER $$
 /*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_people_rol` BEFORE INSERT ON `userroles` FOR EACH ROW 
 BEGIN
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN 
+		SET NEW.uuid=UUID();
+	END IF;
+END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `users` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `before_insert_user` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `before_insert_user` BEFORE INSERT ON `users` FOR EACH ROW 
+BEGIN
+	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
 		SET NEW.uuid=UUID();
 	END IF;
 END */$$
