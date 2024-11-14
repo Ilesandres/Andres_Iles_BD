@@ -16,6 +16,24 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`store_dani` /*!40100 DEFAULT CHARACTER 
 
 USE `store_dani`;
 
+/*Table structure for table `auditlogs` */
+
+DROP TABLE IF EXISTS `auditlogs`;
+
+CREATE TABLE `auditlogs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` varchar(255) DEFAULT NULL,
+  `action` varchar(50) DEFAULT NULL,
+  `tableName` varchar(255) DEFAULT NULL,
+  `recordId` int(11) DEFAULT NULL,
+  `oldValue` text DEFAULT NULL,
+  `newValue` text DEFAULT NULL,
+  `actionTime` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `auditlogs` */
+
 /*Table structure for table `categories` */
 
 DROP TABLE IF EXISTS `categories`;
@@ -300,7 +318,7 @@ CREATE TABLE `productcategories` (
   KEY `productId` (`productId`),
   CONSTRAINT `productcategories_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`),
   CONSTRAINT `productcategories_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `productcategories` */
 
@@ -320,7 +338,8 @@ insert  into `productcategories`(`id`,`categoryId`,`productId`,`uuid`) values
 (68,14,21,'892baccb-96f5-11ef-b93c-0ae0afa00364'),
 (69,18,21,'892c1545-96f5-11ef-b93c-0ae0afa00364'),
 (72,14,23,'0aba7bfb-96f6-11ef-b93c-0ae0afa00364'),
-(73,18,23,'0abc8378-96f6-11ef-b93c-0ae0afa00364');
+(73,18,23,'0abc8378-96f6-11ef-b93c-0ae0afa00364'),
+(74,NULL,24,'f3d7079f-a2a4-11ef-ac02-0ae0afa00364');
 
 /*Table structure for table `products` */
 
@@ -337,7 +356,7 @@ CREATE TABLE `products` (
   `uuid` char(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `products` */
 
@@ -355,7 +374,8 @@ insert  into `products`(`id`,`name`,`stock`,`price`,`createdAt`,`updatedAt`,`isA
 (16,'Panela x1kl',12,4500,'2024-10-15 19:21:48',NULL,1,'a1eee3af-8b54-11ef-9886-0ae0afa00364'),
 (20,'Panela x1kl',12,4500,'2024-10-16 09:43:55',NULL,1,'11c3b277-8bcd-11ef-a996-0ae0afa00364'),
 (21,'Panela x1kl',12,4500,'2024-10-30 14:31:18',NULL,1,'8925c2d7-96f5-11ef-b93c-0ae0afa00364'),
-(23,'Panela x1kl',12,4500,'2024-10-30 14:34:55',NULL,1,'0ab68d8f-96f6-11ef-b93c-0ae0afa00364');
+(23,'Panela x1kl',12,4500,'2024-10-30 14:34:55',NULL,1,'0ab68d8f-96f6-11ef-b93c-0ae0afa00364'),
+(24,'pan',12,4500,'2024-11-14 11:24:42',NULL,1,'f3d60359-a2a4-11ef-ac02-0ae0afa00364');
 
 /*Table structure for table `productsdesc` */
 
@@ -677,6 +697,21 @@ END */$$
 
 DELIMITER ;
 
+/* Trigger structure for table `products` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `productchangelog` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `productchangelog` AFTER UPDATE ON `products` FOR EACH ROW 
+BEGIN
+  INSERT INTO auditLog (tableName, idChange, `action`, oldValue, newValue, idUser)
+  VALUES ('products', OLD.id, 'update', OLD.stock, NEW.stock, CURRENT_USER());
+END */$$
+
+
+DELIMITER ;
+
 /* Trigger structure for table `productsdesc` */
 
 DELIMITER $$
@@ -772,6 +807,117 @@ END */$$
 
 
 DELIMITER ;
+
+/* Procedure structure for procedure `getCategoryFromId` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `getCategoryFromId` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `getCategoryFromId`(IN categoryId INT)
+BEGIN
+    SELECT * FROM categories WHERE id = categoryId;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `getProductsWithCategory` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `getProductsWithCategory` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `getProductsWithCategory`(IN categoryId INT)
+BEGIN
+    SELECT p.*
+    FROM products p
+    INNER JOIN productcategories pc ON p.id = pc.productId
+    WHERE pc.categoryId = categoryId;
+END */$$
+DELIMITER ;
+
+/* Procedure structure for procedure `insertProduct` */
+
+/*!50003 DROP PROCEDURE IF EXISTS  `insertProduct` */;
+
+DELIMITER $$
+
+/*!50003 CREATE DEFINER=`root`@`localhost` PROCEDURE `insertProduct`(
+    IN productName VARCHAR(50),
+    IN productStock INT,
+    IN productPrice FLOAT,
+    IN categoryIds INT
+)
+BEGIN
+    INSERT INTO products (name, stock, price)
+    VALUES (productName, productStock, productPrice);
+
+    SET @productId = LAST_INSERT_ID();
+
+    INSERT INTO productcategories (categoryId, productId)
+    VALUES (categoryId, @productId);
+END */$$
+DELIMITER ;
+
+/*Table structure for table `categoriesview` */
+
+DROP TABLE IF EXISTS `categoriesview`;
+
+/*!50001 DROP VIEW IF EXISTS `categoriesview` */;
+/*!50001 DROP TABLE IF EXISTS `categoriesview` */;
+
+/*!50001 CREATE TABLE  `categoriesview`(
+ `id` int(20) ,
+ `name` varchar(50) ,
+ `description` tinytext ,
+ `uuid` char(36) 
+)*/;
+
+/*Table structure for table `productswithcategories` */
+
+DROP TABLE IF EXISTS `productswithcategories`;
+
+/*!50001 DROP VIEW IF EXISTS `productswithcategories` */;
+/*!50001 DROP TABLE IF EXISTS `productswithcategories` */;
+
+/*!50001 CREATE TABLE  `productswithcategories`(
+ `product_id` int(20) ,
+ `product_name` varchar(50) ,
+ `category_name` varchar(50) 
+)*/;
+
+/*Table structure for table `userandrol` */
+
+DROP TABLE IF EXISTS `userandrol`;
+
+/*!50001 DROP VIEW IF EXISTS `userandrol` */;
+/*!50001 DROP TABLE IF EXISTS `userandrol` */;
+
+/*!50001 CREATE TABLE  `userandrol`(
+ `firstName` varchar(30) ,
+ `lastName` varchar(30) ,
+ `name` varchar(50) 
+)*/;
+
+/*View structure for view categoriesview */
+
+/*!50001 DROP TABLE IF EXISTS `categoriesview` */;
+/*!50001 DROP VIEW IF EXISTS `categoriesview` */;
+
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `categoriesview` AS select `categories`.`id` AS `id`,`categories`.`name` AS `name`,`categories`.`description` AS `description`,`categories`.`uuid` AS `uuid` from `categories` where `categories`.`id` is not null */;
+
+/*View structure for view productswithcategories */
+
+/*!50001 DROP TABLE IF EXISTS `productswithcategories` */;
+/*!50001 DROP VIEW IF EXISTS `productswithcategories` */;
+
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `productswithcategories` AS select `p`.`id` AS `product_id`,`p`.`name` AS `product_name`,`c`.`name` AS `category_name` from ((`products` `p` join `productcategories` `pc` on(`p`.`id` = `pc`.`productId`)) join `categories` `c` on(`pc`.`categoryId` = `c`.`id`)) */;
+
+/*View structure for view userandrol */
+
+/*!50001 DROP TABLE IF EXISTS `userandrol` */;
+/*!50001 DROP VIEW IF EXISTS `userandrol` */;
+
+/*!50001 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `userandrol` AS select `p`.`firstName` AS `firstName`,`p`.`lastName` AS `lastName`,`r`.`name` AS `name` from (((`peoples` `p` join `users` `u` on(`p`.`userId` = `u`.`id`)) join `userroles` `ur` on(`u`.`id` = `ur`.`userId`)) join `roles` `r` on(`ur`.`rolId` = `r`.`id`)) */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
