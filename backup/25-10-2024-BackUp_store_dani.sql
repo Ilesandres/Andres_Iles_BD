@@ -28,11 +28,14 @@ CREATE TABLE `auditlogs` (
   `recordId` int(11) DEFAULT NULL,
   `oldValue` text DEFAULT NULL,
   `newValue` text DEFAULT NULL,
-  `actionTime` datetime DEFAULT NULL,
+  `actionTime` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `auditlogs` */
+
+insert  into `auditlogs`(`id`,`user`,`action`,`tableName`,`recordId`,`oldValue`,`newValue`,`actionTime`) values 
+(1,'root@localhost','UPDATE','invoices',1,'Total: 0.5000, Payment Method: 1','Total: 0.0000, Payment Method: 1','2024-11-14 18:49:03');
 
 /*Table structure for table `categories` */
 
@@ -154,7 +157,7 @@ CREATE TABLE `invoices` (
 /*Data for the table `invoices` */
 
 insert  into `invoices`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`paymentMethod`,`userId`) values 
-(1,1,'2024-10-22 13:37:16',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',NULL,1,1),
+(1,1,'2024-11-14 18:49:03',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',0.0000,1,1),
 (2,2,'2024-10-22 13:37:22',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1,2),
 (4,1,'2024-10-30 12:30:48',NULL,'b3dc508f-96e4-11ef-b93c-0ae0afa00364',8000.0000,1,8),
 (5,1,'2024-10-30 12:32:30',NULL,'f0ba3641-96e4-11ef-b93c-0ae0afa00364',20000.0000,1,8),
@@ -617,6 +620,30 @@ END */$$
 
 DELIMITER ;
 
+/* Trigger structure for table `invoices` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `afterUpdateInvoice` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `afterUpdateInvoice` AFTER UPDATE ON `invoices` FOR EACH ROW 
+BEGIN
+    IF CURRENT_USER() LIKE '%Localhost%' THEN
+        INSERT INTO auditLogs (`user`,`action`, tableName, 
+            recordId, oldValue, newValue,actionTime
+        )
+        VALUES (
+            CURRENT_USER(), 'UPDATE', 'invoices', OLD.id, 
+            CONCAT('Total: ', OLD.total, ', Payment Method: ', OLD.paymentMethod),
+            CONCAT('Total: ', NEW.total, ', Payment Method: ', NEW.paymentMethod), 
+            CURRENT_TIMESTAMP         -- action time
+        );
+    END IF;
+END */$$
+
+
+DELIMITER ;
+
 /* Trigger structure for table `invoicestatus` */
 
 DELIMITER $$
@@ -692,21 +719,6 @@ BEGIN
 	IF NEW.uuid IS NULL OR NEW.uuid='' THEN
 		set NEW.uuid=UUID();
 	END IF;
-END */$$
-
-
-DELIMITER ;
-
-/* Trigger structure for table `products` */
-
-DELIMITER $$
-
-/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `productchangelog` */$$
-
-/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `productchangelog` AFTER UPDATE ON `products` FOR EACH ROW 
-BEGIN
-  INSERT INTO auditLog (tableName, idChange, `action`, oldValue, newValue, idUser)
-  VALUES ('products', OLD.id, 'update', OLD.stock, NEW.stock, CURRENT_USER());
 END */$$
 
 

@@ -2,7 +2,7 @@
 
 
 ##DROP TABLE auditLog;
-/*
+
 CREATE TABLE auditLogs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     `user` VARCHAR(255),
@@ -11,28 +11,48 @@ CREATE TABLE auditLogs (
     recordId INT,
     oldValue TEXT,
     newValue TEXT,
-    actionTime DATETIME
-); */
-CREATE TABLE productsAudit(
-id INT(20) AUTO_INCREMENT PRIMARY KEY,
-idChange INT(20),
-`name` VARCHAR(255),
-stock INT(10),
-isActive BOOL
+    actionTime DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE `invoiceAudit` (
+  `id` INT(20) NOT NULL AUTO_INCREMENT,
+  `invoiceId` INT(20) NOT NULL,
+  `action` ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+  `oldTotal` DECIMAL(10,4) DEFAULT NULL,
+  `newTotal` DECIMAL(10,4) DEFAULT NULL,
+  `oldPaymentMethod` INT(20) DEFAULT NULL,
+  `newPaymentMethod` INT(20) DEFAULT NULL,
+  `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+  `createdBy` VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`invoiceId`) REFERENCES `invoices`(`id`)
 );
 
 
 
 
-DELIMITER $$
-CREATE TRIGGER `productchangelog`
-AFTER UPDATE ON `products`
+DELIMITER //
+
+CREATE TRIGGER afterUpdateInvoice
+AFTER UPDATE ON invoices 
 FOR EACH ROW
 BEGIN
-  INSERT INTO auditLogs (userId, ACTION, tableName, recordId, oldValue, newValue)
-  VALUES (CURRENT_USER(), 'update', 'products', OLD.id, OLD.stock, NEW.stock);
-END $$
+    IF CURRENT_USER() LIKE '%Localhost%' THEN
+        INSERT INTO auditLogs (`user`,`action`, tableName, 
+            recordId, oldValue, newValue,actionTime)
+        VALUES (
+            CURRENT_USER(), 'UPDATE', 'invoices', OLD.id, 
+            CONCAT('Total: ', OLD.total, ', Payment Method: ', OLD.paymentMethod),
+            CONCAT('Total: ', NEW.total, ', Payment Method: ', NEW.paymentMethod), 
+            CURRENT_TIMESTAMP);
+    END IF;
+END //
+
 DELIMITER ;
+
+
+
 
 
 
