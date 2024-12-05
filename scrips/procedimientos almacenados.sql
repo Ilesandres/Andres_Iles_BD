@@ -7,7 +7,7 @@ END //
 
 DELIMITER ;
 
-CALL getCategoryFromId(10);
+CALL getCategoryFromId(13);
 
 
 
@@ -52,7 +52,7 @@ DELIMITER ;
 
 
 CALL insertProduct(
-'pan',12, 4500,14
+'Agua bolsa',24,500.0,11
 );
 
 

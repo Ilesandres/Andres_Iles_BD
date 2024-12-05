@@ -52,6 +52,28 @@ END //
 DELIMITER ;
 
 
+## insersion
+DELIMITER //
+
+CREATE TRIGGER afterInsertInvoice
+AFTER INSERT ON invoices
+FOR EACH ROW
+BEGIN
+    IF CURRENT_USER() LIKE '%Localhost%' THEN
+        INSERT INTO auditLogs (`user`, `action`, tableName, 
+            recordId, oldValue, newValue, actionTime)
+        VALUES (
+            CURRENT_USER(), 'INSERT', 'invoices', NEW.id, 
+            NULL,
+            CONCAT('Total: ', NEW.total, ', Payment Method: ', NEW.paymentMethod), 
+            CURRENT_TIMESTAMP);
+    END IF;
+END //
+
+DELIMITER ;
+
+
+
 
 
 
