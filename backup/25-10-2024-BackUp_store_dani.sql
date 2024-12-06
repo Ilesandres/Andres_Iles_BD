@@ -30,12 +30,19 @@ CREATE TABLE `auditlogs` (
   `newValue` text DEFAULT NULL,
   `actionTime` datetime DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `auditlogs` */
 
 insert  into `auditlogs`(`id`,`user`,`action`,`tableName`,`recordId`,`oldValue`,`newValue`,`actionTime`) values 
-(1,'root@localhost','UPDATE','invoices',1,'Total: 0.5000, Payment Method: 1','Total: 0.0000, Payment Method: 1','2024-11-14 18:49:03');
+(1,'root@localhost','UPDATE','invoices',1,'Total: 0.5000, Payment Method: 1','Total: 0.0000, Payment Method: 1','2024-11-14 18:49:03'),
+(2,'root@localhost','UPDATE','invoices',1,'Total: 0.0000, Payment Method: 1','Total: 0.2500, Payment Method: 1','2024-11-14 19:37:05'),
+(3,'root@localhost','UPDATE','invoices',1,'Total: 0.2500, Payment Method: 1','Total: 0.0000, Payment Method: 1','2024-11-14 19:38:33'),
+(4,'root@localhost','UPDATE','invoices',1,'Total: 0.0000, Payment Method: 1','Total: 0.2530, Payment Method: 1','2024-11-14 19:38:48'),
+(5,'root@localhost','UPDATE','invoices',2,NULL,'Total: 0.0000, Payment Method: 1','2024-11-14 19:51:11'),
+(6,'root@localhost','UPDATE','invoices',2,'Total: 0.0000, Payment Method: 1','Total: 2.3300, Payment Method: 1','2024-11-14 19:51:34'),
+(7,'root@localhost','INSERT','invoices',16,NULL,'Total: 0.0000, Payment Method: 1','2024-11-14 19:53:17'),
+(8,'root@localhost','INSERT','invoices',17,NULL,'Total: 0.2000, Payment Method: 1','2024-11-14 19:55:44');
 
 /*Table structure for table `categories` */
 
@@ -152,13 +159,13 @@ CREATE TABLE `invoices` (
   CONSTRAINT `invoices_ibfk_2` FOREIGN KEY (`statusId`) REFERENCES `invoicestatus` (`id`),
   CONSTRAINT `invoices_ibfk_4` FOREIGN KEY (`paymentMethod`) REFERENCES `paymentmethods` (`id`),
   CONSTRAINT `invoices_ibfk_5` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `invoices` */
 
 insert  into `invoices`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`paymentMethod`,`userId`) values 
-(1,1,'2024-11-14 18:49:03',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',0.0000,1,1),
-(2,2,'2024-10-22 13:37:22',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',NULL,1,2),
+(1,1,'2024-11-14 19:38:48',NULL,'51f3c79f-8808-11ef-ade4-0ae0afa00364',0.2530,1,1),
+(2,2,'2024-11-14 19:51:34',NULL,'61648a95-8808-11ef-ade4-0ae0afa00364',2.3300,1,2),
 (4,1,'2024-10-30 12:30:48',NULL,'b3dc508f-96e4-11ef-b93c-0ae0afa00364',8000.0000,1,8),
 (5,1,'2024-10-30 12:32:30',NULL,'f0ba3641-96e4-11ef-b93c-0ae0afa00364',20000.0000,1,8),
 (6,1,'2024-10-30 12:35:36',NULL,'5f9282d3-96e5-11ef-b93c-0ae0afa00364',16000.0000,1,8),
@@ -167,7 +174,9 @@ insert  into `invoices`(`id`,`statusId`,`createdAt`,`updatedAt`,`uuid`,`total`,`
 (9,1,'2024-10-31 11:45:17',NULL,'82343c81-97a7-11ef-ac34-0ae0afa00364',56400.0000,1,2),
 (11,1,'2024-11-02 18:32:30',NULL,'ba910b3f-9972-11ef-8688-0ae0afa00364',8000.0000,1,5),
 (14,1,'2024-11-02 18:41:50',NULL,'07ee4612-9974-11ef-8688-0ae0afa00364',4000.0000,1,4),
-(15,1,'2024-11-05 21:36:25',NULL,'eaf1b85b-9be7-11ef-a3ca-0ae0afa00364',28000.0000,1,9);
+(15,1,'2024-11-05 21:36:25',NULL,'eaf1b85b-9be7-11ef-a3ca-0ae0afa00364',28000.0000,1,9),
+(16,1,'2024-11-14 19:53:17',NULL,'005c3d21-a2ec-11ef-ac10-0ae0afa00364',0.0000,1,2),
+(17,2,'2024-11-14 19:55:44',NULL,'57d1242c-a2ec-11ef-ac10-0ae0afa00364',0.2000,1,3);
 
 /*Table structure for table `invoicestatus` */
 
@@ -289,6 +298,9 @@ CREATE TABLE `peoples` (
   UNIQUE KEY `uuid` (`uuid`),
   KEY `documentTypeId` (`documentTypeId`),
   KEY `userId` (`userId`),
+  KEY `idx_firstName` (`firstName`),
+  KEY `idx_peoples_firstName_lastName` (`firstName`,`lastName`),
+  KEY `idx_lasttName` (`lastName`),
   CONSTRAINT `peoples_ibfk_1` FOREIGN KEY (`documentTypeId`) REFERENCES `documenttypes` (`id`),
   CONSTRAINT `peoples_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -321,7 +333,7 @@ CREATE TABLE `productcategories` (
   KEY `productId` (`productId`),
   CONSTRAINT `productcategories_ibfk_1` FOREIGN KEY (`categoryId`) REFERENCES `categories` (`id`),
   CONSTRAINT `productcategories_ibfk_2` FOREIGN KEY (`productId`) REFERENCES `products` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `productcategories` */
 
@@ -342,7 +354,8 @@ insert  into `productcategories`(`id`,`categoryId`,`productId`,`uuid`) values
 (69,18,21,'892c1545-96f5-11ef-b93c-0ae0afa00364'),
 (72,14,23,'0aba7bfb-96f6-11ef-b93c-0ae0afa00364'),
 (73,18,23,'0abc8378-96f6-11ef-b93c-0ae0afa00364'),
-(74,NULL,24,'f3d7079f-a2a4-11ef-ac02-0ae0afa00364');
+(74,NULL,24,'f3d7079f-a2a4-11ef-ac02-0ae0afa00364'),
+(75,NULL,25,'20cf4cb3-a2eb-11ef-ac10-0ae0afa00364');
 
 /*Table structure for table `products` */
 
@@ -359,7 +372,7 @@ CREATE TABLE `products` (
   `uuid` char(36) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uuid` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `products` */
 
@@ -378,7 +391,8 @@ insert  into `products`(`id`,`name`,`stock`,`price`,`createdAt`,`updatedAt`,`isA
 (20,'Panela x1kl',12,4500,'2024-10-16 09:43:55',NULL,1,'11c3b277-8bcd-11ef-a996-0ae0afa00364'),
 (21,'Panela x1kl',12,4500,'2024-10-30 14:31:18',NULL,1,'8925c2d7-96f5-11ef-b93c-0ae0afa00364'),
 (23,'Panela x1kl',12,4500,'2024-10-30 14:34:55',NULL,1,'0ab68d8f-96f6-11ef-b93c-0ae0afa00364'),
-(24,'pan',12,4500,'2024-11-14 11:24:42',NULL,1,'f3d60359-a2a4-11ef-ac02-0ae0afa00364');
+(24,'pan',12,4500,'2024-11-14 11:24:42',NULL,1,'f3d60359-a2a4-11ef-ac02-0ae0afa00364'),
+(25,'Agua bolsa',24,500,'2024-11-14 19:47:02',NULL,1,'20cc3328-a2eb-11ef-ac10-0ae0afa00364');
 
 /*Table structure for table `productsdesc` */
 
@@ -469,7 +483,8 @@ CREATE TABLE `roles` (
   `description` tinytext DEFAULT NULL,
   `uuid` char(36) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`)
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `idx_roles_name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `roles` */
@@ -615,6 +630,28 @@ BEGIN
   IF NEW.uuid IS NULL OR NEW.uuid = '' THEN
     SET NEW.uuid = UUID();
   END IF;
+END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `invoices` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `afterInsertInvoice` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `afterInsertInvoice` AFTER INSERT ON `invoices` FOR EACH ROW 
+BEGIN
+    IF CURRENT_USER() LIKE '%Localhost%' THEN
+        INSERT INTO auditLogs (`user`, `action`, tableName, 
+            recordId, oldValue, newValue, actionTime)
+        VALUES (
+            CURRENT_USER(), 'INSERT', 'invoices', NEW.id, 
+            NULL,
+            CONCAT('Total: ', NEW.total, ', Payment Method: ', NEW.paymentMethod), 
+            CURRENT_TIMESTAMP);
+    END IF;
 END */$$
 
 
